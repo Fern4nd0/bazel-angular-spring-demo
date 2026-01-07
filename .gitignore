@@ -200,3 +200,7 @@ out
 google-cloud-functions/automationTest/package-lock.json
 google-cloud-functions/automationTest/.cache
 google-cloud-functions/automationTest/node_modules
+/bazel-bazel-angular-spring-demo/
+/bazel-bin/
+/bazel-out/
+/bazel-testlogs/
