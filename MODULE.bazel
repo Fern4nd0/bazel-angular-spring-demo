@@ -16,6 +16,11 @@ maven.install(
         "org.springframework:spring-context:6.1.6",
         "org.springframework:spring-web:6.1.6",
         "org.springframework:spring-webmvc:6.1.6",
+        "com.fasterxml.jackson.core:jackson-annotations:2.17.1",
+        "io.swagger.core.v3:swagger-annotations:2.2.21",
+        "jakarta.annotation:jakarta.annotation-api:2.1.1",
+        "jakarta.validation:jakarta.validation-api:3.0.2",
+        "org.openapitools:openapi-generator-cli:7.6.0",
         "junit:junit:4.13.2",
     ],
     repositories = [
