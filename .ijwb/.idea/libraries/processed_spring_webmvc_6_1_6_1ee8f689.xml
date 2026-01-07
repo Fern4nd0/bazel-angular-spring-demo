@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="processed_spring-webmvc-6.1.6_1ee8f689">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.cache/bazel/_bazel_fernando/36ab5d6c0ef09f43db6c618631101280/execroot/_main/bazel-out/k8-fastbuild/bin/external/rules_jvm_external~~maven~maven/v1/https/repo1.maven.org/maven2/org/springframework/spring-webmvc/6.1.6/processed_spring-webmvc-6.1.6.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
