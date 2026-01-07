@@ -1,0 +1,8 @@
+<section class="card">
+  <h1>Home</h1>
+  <p>Click to load the greeting from the Spring Boot backend.</p>
+  <button (click)="load()" [disabled]="loading">Load from backend</button>
+  <p *ngIf="loading">Loading...</p>
+  <p *ngIf="message">{{ message }}</p>
+  <p *ngIf="error">{{ error }}</p>
+</section>

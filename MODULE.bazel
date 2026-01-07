@@ -1,0 +1,47 @@
+module(
+    name = "bazel_angular_spring_demo",
+    version = "0.1.0",
+)
+
+bazel_dep(name = "rules_jvm_external", version = "6.5")
+bazel_dep(name = "aspect_rules_js", version = "2.2.0")
+bazel_dep(name = "rules_nodejs", version = "6.3.0")
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "org.springframework.boot:spring-boot-starter-web:3.2.5",
+        "org.springframework.boot:spring-boot:3.2.5",
+        "org.springframework.boot:spring-boot-autoconfigure:3.2.5",
+        "org.springframework:spring-context:6.1.6",
+        "org.springframework:spring-web:6.1.6",
+        "org.springframework:spring-webmvc:6.1.6",
+        "junit:junit:4.13.2",
+    ],
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+use_repo(maven, "maven")
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    pnpm_lock = "//front:pnpm-lock.yaml",
+    bins = {
+        "@angular/cli": ["ng=./bin/ng.js"],
+    },
+)
+use_repo(npm, "npm")
+
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
+node.toolchain(
+    node_version = "20.11.1",
+)
+use_repo(
+    node,
+    "nodejs",
+    "nodejs_linux_amd64",
+    "nodejs_toolchains",
+)
+register_toolchains("@nodejs_toolchains//:linux_amd64_toolchain")

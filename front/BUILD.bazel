@@ -1,0 +1,50 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary", "js_run_devserver")
+load("@npm//:defs.bzl", "npm_link_all_packages", "npm_link_targets")
+
+npm_link_all_packages(name = "node_modules")
+
+NODE_MODULES = npm_link_targets(name = "node_modules")
+NG_DATA = NODE_MODULES + glob(["**"])
+
+js_binary(
+    name = "ng",
+    entry_point = "tools/ng.js",
+    data = NG_DATA,
+    chdir = "front",
+    env = {
+        "CI": "true",
+        "NG_CLI_ANALYTICS": "false",
+        "NG_CLI_ANALYTICS_SHARE": "false",
+    },
+)
+
+js_run_devserver(
+    name = "devserver",
+    tool = ":ng",
+    args = [
+        "serve",
+        "--configuration",
+        "development",
+        "--port",
+        "4200",
+        "--proxy-config",
+        "proxy.conf.json",
+    ],
+    data = NG_DATA,
+    grant_sandbox_write_permissions = True,
+)
+
+js_run_binary(
+    name = "build",
+    tool = ":ng",
+    args = [
+        "build",
+        "--configuration",
+        "production",
+        "--output-path",
+        "dist",
+    ],
+    chdir = "front",
+    out_dirs = ["dist"],
+    srcs = NG_DATA,
+)
