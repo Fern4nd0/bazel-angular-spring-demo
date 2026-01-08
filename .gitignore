@@ -204,3 +204,7 @@ google-cloud-functions/automationTest/node_modules
 /bazel-bin/
 /bazel-out/
 /bazel-testlogs/
+bazel-bazel-angular-spring-demo
+bazel-bin
+bazel-out
+bazel-testlogs

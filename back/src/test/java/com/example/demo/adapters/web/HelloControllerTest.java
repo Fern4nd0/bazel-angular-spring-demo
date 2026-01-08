@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.adapters.web;
 
 import static org.junit.Assert.assertEquals;
 

@@ -47,7 +47,7 @@ java_binary(
 java_test(
     name = "app_test",
     srcs = glob(["src/test/java/**/*.java"]),
-    test_class = "com.example.demo.HelloControllerTest",
+    test_class = "com.example.demo.adapters.web.HelloControllerTest",
     deps = [
         ":app_lib",
         "@maven//:junit_junit",

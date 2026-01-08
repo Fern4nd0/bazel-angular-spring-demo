@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.example.demo.adapters.web;
 
 import java.util.Map;
 import org.springframework.web.bind.annotation.GetMapping;
