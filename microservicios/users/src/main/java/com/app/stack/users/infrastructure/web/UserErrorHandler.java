@@ -3,7 +3,7 @@ package com.app.stack.users.infrastructure.web;
 import com.app.stack.generated.model.Error;
 import com.app.stack.users.domain.errors.DomainErrorCode;
 import com.app.stack.users.domain.errors.DomainException;
-import com.app.stack.users.infrastructure.persistence.UserPersistenceException;
+import com.app.stack.users.infrastructure.persistence.repositories.UserPersistenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;

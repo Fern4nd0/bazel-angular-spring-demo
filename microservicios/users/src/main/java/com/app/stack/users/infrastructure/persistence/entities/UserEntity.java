@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.persistence;
+package com.app.stack.users.infrastructure.persistence.entities;
 
 import com.app.stack.users.domain.entities.UserStatus;
 import jakarta.persistence.Column;

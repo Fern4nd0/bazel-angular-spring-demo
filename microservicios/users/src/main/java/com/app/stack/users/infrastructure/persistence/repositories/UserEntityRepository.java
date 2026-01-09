@@ -1,5 +1,6 @@
-package com.app.stack.users.infrastructure.persistence;
+package com.app.stack.users.infrastructure.persistence.repositories;
 
+import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;

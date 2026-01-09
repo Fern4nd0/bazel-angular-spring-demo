@@ -1,11 +1,13 @@
-package com.app.stack.users.infrastructure.persistence;
+package com.app.stack.users.infrastructure.persistence.repositories;
 
+import com.app.stack.users.application.port.UserRepository;
 import com.app.stack.users.domain.entities.PageRequest;
 import com.app.stack.users.domain.entities.SortDirection;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
-import com.app.stack.users.application.port.UserRepository;
+import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
+import com.app.stack.users.infrastructure.persistence.mappers.UserPersistenceMapper;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.springframework.dao.DataAccessException;

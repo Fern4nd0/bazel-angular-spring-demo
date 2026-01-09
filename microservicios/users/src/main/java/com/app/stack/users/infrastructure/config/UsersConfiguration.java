@@ -1,10 +1,10 @@
 package com.app.stack.users.infrastructure.config;
 
 import com.app.stack.users.infrastructure.web.UserApiMapper;
-import com.app.stack.users.infrastructure.persistence.JpaUserRepositoryAdapter;
-import com.app.stack.users.infrastructure.persistence.UserEntity;
-import com.app.stack.users.infrastructure.persistence.UserEntityRepository;
-import com.app.stack.users.infrastructure.persistence.UserPersistenceMapper;
+import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
+import com.app.stack.users.infrastructure.persistence.mappers.UserPersistenceMapper;
+import com.app.stack.users.infrastructure.persistence.repositories.JpaUserRepositoryAdapter;
+import com.app.stack.users.infrastructure.persistence.repositories.UserEntityRepository;
 import com.app.stack.users.application.UserUseCase;
 import com.app.stack.users.application.port.UserRepository;
 import org.mapstruct.factory.Mappers;

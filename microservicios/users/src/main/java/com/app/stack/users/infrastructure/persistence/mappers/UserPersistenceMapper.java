@@ -1,6 +1,7 @@
-package com.app.stack.users.infrastructure.persistence;
+package com.app.stack.users.infrastructure.persistence.mappers;
 
 import com.app.stack.users.domain.entities.User;
+import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
 import org.mapstruct.Mapper;
 
 @Mapper

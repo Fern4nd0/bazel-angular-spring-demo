@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.persistence;
+package com.app.stack.users.infrastructure.persistence.repositories;
 
 public class UserPersistenceException extends RuntimeException {
     public UserPersistenceException(String message, Throwable cause) {
