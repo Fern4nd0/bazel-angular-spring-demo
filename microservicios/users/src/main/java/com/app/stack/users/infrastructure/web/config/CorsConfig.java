@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.web;
+package com.app.stack.users.infrastructure.web.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

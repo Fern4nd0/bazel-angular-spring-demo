@@ -1,6 +1,6 @@
-package com.app.stack.users.infrastructure.config;
+package com.app.stack.users.infrastructure.web.config;
 
-import com.app.stack.users.infrastructure.web.UserApiMapper;
+import com.app.stack.users.infrastructure.web.mappers.UserApiMapper;
 import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
 import com.app.stack.users.infrastructure.persistence.mappers.UserPersistenceMapper;
 import com.app.stack.users.infrastructure.persistence.repositories.JpaUserRepositoryAdapter;
@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(basePackageClasses = UserEntityRepository.class)
 @EntityScan(basePackageClasses = UserEntity.class)
-public class UsersConfiguration {
+public class Config {
     @Bean
     public UserUseCase userUseCase(UserRepository repository) {
         return new UserUseCase(repository);

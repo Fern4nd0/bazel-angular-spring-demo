@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.web;
+package com.app.stack.users.infrastructure.web.controllers;
 
 import com.app.stack.generated.api.UsersApi;
 import com.app.stack.generated.model.User;
@@ -8,6 +8,7 @@ import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
 import com.app.stack.users.application.UserUseCase;
 import com.app.stack.users.domain.entities.UserPage;
+import com.app.stack.users.infrastructure.web.mappers.UserApiMapper;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

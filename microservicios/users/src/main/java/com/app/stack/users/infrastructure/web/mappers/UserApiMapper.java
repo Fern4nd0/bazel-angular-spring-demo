@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.web;
+package com.app.stack.users.infrastructure.web.mappers;
 
 import com.app.stack.generated.model.Pagination;
 import com.app.stack.generated.model.UserCreate;

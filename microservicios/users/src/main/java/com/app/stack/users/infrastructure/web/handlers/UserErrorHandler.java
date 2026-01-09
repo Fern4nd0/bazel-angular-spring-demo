@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure.web;
+package com.app.stack.users.infrastructure.web.handlers;
 
 import com.app.stack.generated.model.Error;
 import com.app.stack.users.domain.errors.DomainErrorCode;
