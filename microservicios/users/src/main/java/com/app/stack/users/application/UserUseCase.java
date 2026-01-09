@@ -3,10 +3,8 @@ package com.app.stack.users.application;
 import com.app.stack.users.domain.PageRequest;
 import com.app.stack.users.domain.SortDirection;
 import com.app.stack.users.domain.User;
-import com.app.stack.users.domain.UserCreateData;
 import com.app.stack.users.domain.UserPage;
 import com.app.stack.users.domain.UserStatus;
-import com.app.stack.users.domain.UserUpdateData;
 import com.app.stack.users.domain.errors.DomainErrorCode;
 import com.app.stack.users.domain.errors.DomainException;
 import com.app.stack.users.application.port.UserRepository;
@@ -52,10 +50,14 @@ public class UserUseCase {
         return repository.searchUsers(query.trim(), pageRequest);
     }
 
-    public User createUser(UserCreateData create) {
+    public User createUser(User create) {
         if (create == null || isBlank(create.getEmail())
                 || isBlank(create.getFirstName()) || isBlank(create.getLastName())) {
             throw new DomainException(DomainErrorCode.INVALID_USER_DATA, MISSING_REQUIRED_FIELDS);
+        }
+        if (create.getId() != null || create.getStatus() != null
+                || create.getCreatedAt() != null || create.getUpdatedAt() != null) {
+            throw new DomainException(DomainErrorCode.INVALID_USER_DATA, "Immutable fields are not allowed on create.");
         }
         String email = create.getEmail().trim();
         ensureEmailAvailable(email, null);
@@ -80,9 +82,12 @@ public class UserUseCase {
                 .orElseThrow(() -> new DomainException(DomainErrorCode.USER_NOT_FOUND, USER_NOT_FOUND));
     }
 
-    public User updateUser(Long id, UserUpdateData update) {
+    public User updateUser(Long id, User update) {
         if (update == null) {
             throw new DomainException(DomainErrorCode.INVALID_USER_DATA, MISSING_REQUEST_BODY);
+        }
+        if (update.getId() != null || update.getCreatedAt() != null || update.getUpdatedAt() != null) {
+            throw new DomainException(DomainErrorCode.INVALID_USER_DATA, "Immutable fields are not allowed on update.");
         }
         User user = getUser(id);
         if (!isBlank(update.getEmail())) {

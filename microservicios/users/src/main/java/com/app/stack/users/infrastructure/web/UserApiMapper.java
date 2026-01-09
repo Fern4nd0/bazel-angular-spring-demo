@@ -16,9 +16,9 @@ public interface UserApiMapper {
     @Mapping(target = "status", source = "status")
     com.app.stack.users.domain.User toDomain(com.app.stack.generated.model.User user);
 
-    com.app.stack.users.domain.UserCreateData toDomain(UserCreate create);
+    com.app.stack.users.domain.User toDomain(UserCreate create);
 
-    com.app.stack.users.domain.UserUpdateData toDomain(UserUpdate update);
+    com.app.stack.users.domain.User toDomain(UserUpdate update);
 
     com.app.stack.users.domain.UserStatus toDomain(com.app.stack.generated.model.UserStatus status);
 
