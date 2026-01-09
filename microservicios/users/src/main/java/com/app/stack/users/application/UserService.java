@@ -21,6 +21,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class UserService {
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 200;
+    private static final String DEFAULT_ROLE = "user";
+    private static final String MISSING_REQUIRED_FIELDS = "Missing required fields.";
+    private static final String MISSING_REQUEST_BODY = "Missing request body.";
+    private static final String MISSING_SEARCH_TEXT = "Missing search text.";
+    private static final String USER_NOT_FOUND = "User not found.";
+    private static final String EMAIL_ALREADY_REGISTERED = "Email is already registered.";
 
     private final UserRepository repository;
 
@@ -35,8 +41,8 @@ public class UserService {
             UserStatus status,
             String role) {
         Pageable pageable = buildPageable(page, pageSize, sort);
-        Page<User> result = repository.findAll(pageable, status, role);
-        return toListResponse(result, normalizePage(page), normalizePageSize(pageSize));
+        Page<User> result = repository.findUsers(pageable, status, role);
+        return toListResponse(result);
     }
 
     public UserListResponse searchUsers(
@@ -45,17 +51,17 @@ public class UserService {
             Integer pageSize,
             String sort) {
         if (query == null || query.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing search text.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_SEARCH_TEXT);
         }
         Pageable pageable = buildPageable(page, pageSize, sort);
-        Page<User> result = repository.search(query.trim(), pageable);
-        return toListResponse(result, normalizePage(page), normalizePageSize(pageSize));
+        Page<User> result = repository.searchUsers(query.trim(), pageable);
+        return toListResponse(result);
     }
 
     public User createUser(UserCreate create) {
         if (create == null || isBlank(create.getEmail())
                 || isBlank(create.getFirstName()) || isBlank(create.getLastName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing required fields.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_REQUIRED_FIELDS);
         }
         String email = create.getEmail().trim();
         ensureEmailAvailable(email, null);
@@ -65,9 +71,9 @@ public class UserService {
         user.setEmail(email);
         user.setFirstName(create.getFirstName().trim());
         user.setLastName(create.getLastName().trim());
-        user.setRole(isBlank(create.getRole()) ? "user" : create.getRole().trim());
+        user.setRole(isBlank(create.getRole()) ? DEFAULT_ROLE : create.getRole().trim());
         user.setStatus(UserStatus.ACTIVE);
-        user.setPhone(normalizeNullable(create.getPhone()));
+        user.setPhone(trimToNull(create.getPhone()));
         user.setMetadata(create.getMetadata());
         user.setCreatedAt(now);
         user.setUpdatedAt(now);
@@ -77,12 +83,12 @@ public class UserService {
 
     public User getUser(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
     }
 
     public User updateUser(Long id, UserUpdate update) {
         if (update == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing request body.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_REQUEST_BODY);
         }
         User user = getUser(id);
         if (!isBlank(update.getEmail())) {
@@ -103,7 +109,7 @@ public class UserService {
             user.setStatus(update.getStatus());
         }
         if (update.getPhone() != null) {
-            user.setPhone(normalizeNullable(update.getPhone()));
+            user.setPhone(trimToNull(update.getPhone()));
         }
         if (update.getMetadata() != null) {
             user.setMetadata(update.getMetadata());
@@ -114,20 +120,20 @@ public class UserService {
 
     public void deleteUser(Long id) {
         if (!repository.deleteById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
         }
     }
 
-    private UserListResponse toListResponse(Page<User> page, int requestedPage, int requestedPageSize) {
+    private UserListResponse toListResponse(Page<User> page) {
         int totalPages = Math.max(1, page.getTotalPages());
-        Pagination pagination = new Pagination(requestedPage, requestedPageSize, (int) page.getTotalElements(), totalPages);
+        Pagination pagination = new Pagination(page.getNumber() + 1, page.getSize(), (int) page.getTotalElements(), totalPages);
         return new UserListResponse(page.getContent(), pagination);
     }
 
     private void ensureEmailAvailable(String email, Long currentUserId) {
         Optional<User> existing = repository.findByEmail(email);
         if (existing.isPresent() && !existing.get().getId().equals(currentUserId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, EMAIL_ALREADY_REGISTERED);
         }
     }
 
@@ -149,11 +155,12 @@ public class UserService {
         return value == null || value.trim().isEmpty();
     }
 
-    private String normalizeNullable(String value) {
+    private String trimToNull(String value) {
         if (value == null) {
             return null;
         }
-        return value;
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private Pageable buildPageable(Integer page, Integer pageSize, String sort) {

@@ -11,9 +11,9 @@ public interface UserRepository {
 
     Optional<User> findByEmail(String email);
 
-    Page<User> findAll(Pageable pageable, UserStatus status, String role);
+    Page<User> findUsers(Pageable pageable, UserStatus status, String role);
 
-    Page<User> search(String query, Pageable pageable);
+    Page<User> searchUsers(String query, Pageable pageable);
 
     User save(User user);
 

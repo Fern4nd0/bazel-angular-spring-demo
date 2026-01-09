@@ -31,26 +31,16 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    public Page<User> findAll(Pageable pageable, UserStatus status, String role) {
-        Specification<UserEntity> spec = Specification.where(null);
-        if (status != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
-        }
-        if (role != null && !role.isBlank()) {
-            String normalized = role.trim().toLowerCase();
-            spec = spec.and((root, query, cb) -> cb.equal(cb.lower(root.get("role")), normalized));
-        }
+    public Page<User> findUsers(Pageable pageable, UserStatus status, String role) {
+        Specification<UserEntity> spec = Specification
+                .where(UserSpecifications.hasStatus(status))
+                .and(UserSpecifications.hasRole(role));
         return repository.findAll(spec, pageable).map(this::toModel);
     }
 
     @Override
-    public Page<User> search(String query, Pageable pageable) {
-        String normalized = query == null ? "" : query.trim().toLowerCase();
-        Specification<UserEntity> spec = (root, q, cb) -> cb.or(
-                cb.like(cb.lower(root.get("email")), "%" + normalized + "%"),
-                cb.like(cb.lower(root.get("firstName")), "%" + normalized + "%"),
-                cb.like(cb.lower(root.get("lastName")), "%" + normalized + "%")
-        );
+    public Page<User> searchUsers(String query, Pageable pageable) {
+        Specification<UserEntity> spec = UserSpecifications.matchesQuery(query);
         return repository.findAll(spec, pageable).map(this::toModel);
     }
 
