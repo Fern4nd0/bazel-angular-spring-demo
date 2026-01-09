@@ -1,4 +1,4 @@
-package com.example.demo;
+package com.app.stack;
 
 import static org.junit.Assert.assertNotNull;
 

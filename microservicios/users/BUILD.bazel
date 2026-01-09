@@ -3,8 +3,8 @@ load("//filters:openapi_codegen.bzl", "openapi_generated_srcjar")
 openapi_generated_srcjar(
     name = "openapi_generated_srcjar",
     spec = "src/main/resources/spec/openapi.yaml",
-    api_package = "com.example.demo.generated.api",
-    model_package = "com.example.demo.generated.model",
+    api_package = "com.app.stack.generated.api",
+    model_package = "com.app.stack.generated.model",
     generator_name = "spring",
     additional_properties = {
         "useSpringBoot3": True,
@@ -22,7 +22,7 @@ java_library(
     name = "app_lib",
     srcs = glob(
         ["src/main/java/**/*.java"],
-        exclude = ["src/main/java/com/example/demo/generated/**/*.java"],
+        exclude = ["src/main/java/com/app/stack/generated/**/*.java"],
     ) + [":openapi_generated_srcjar"],
     resources = glob(["src/main/resources/**"]),
     deps = [
@@ -41,14 +41,14 @@ java_library(
 
 java_binary(
     name = "server",
-    main_class = "com.example.demo.Application",
+    main_class = "com.app.stack.Application",
     runtime_deps = [":app_lib"],
 )
 
 java_test(
     name = "app_test",
     srcs = glob(["src/test/java/**/*.java"]),
-    test_class = "com.example.demo.ApplicationTest",
+    test_class = "com.app.stack.ApplicationTest",
     deps = [
         ":app_lib",
         "@maven//:junit_junit",

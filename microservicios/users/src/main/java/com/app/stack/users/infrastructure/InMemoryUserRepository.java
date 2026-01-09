@@ -1,8 +1,8 @@
-package com.example.demo.users.infrastructure;
+package com.app.stack.users.infrastructure;
 
-import com.example.demo.generated.model.User;
-import com.example.demo.generated.model.UserStatus;
-import com.example.demo.users.domain.UserRepository;
+import com.app.stack.generated.model.User;
+import com.app.stack.generated.model.UserStatus;
+import com.app.stack.users.domain.UserRepository;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;

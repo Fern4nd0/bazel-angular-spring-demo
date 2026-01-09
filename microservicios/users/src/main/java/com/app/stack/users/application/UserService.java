@@ -1,12 +1,12 @@
-package com.example.demo.users.application;
+package com.app.stack.users.application;
 
-import com.example.demo.generated.model.Pagination;
-import com.example.demo.generated.model.User;
-import com.example.demo.generated.model.UserCreate;
-import com.example.demo.generated.model.UserListResponse;
-import com.example.demo.generated.model.UserStatus;
-import com.example.demo.generated.model.UserUpdate;
-import com.example.demo.users.domain.UserRepository;
+import com.app.stack.generated.model.Pagination;
+import com.app.stack.generated.model.User;
+import com.app.stack.generated.model.UserCreate;
+import com.app.stack.generated.model.UserListResponse;
+import com.app.stack.generated.model.UserStatus;
+import com.app.stack.generated.model.UserUpdate;
+import com.app.stack.users.domain.UserRepository;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,6 +1,6 @@
-package com.example.demo.users.domain;
+package com.app.stack.users.domain;
 
-import com.example.demo.generated.model.User;
+import com.app.stack.generated.model.User;
 import java.util.List;
 import java.util.Optional;
 

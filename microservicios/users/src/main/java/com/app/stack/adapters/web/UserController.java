@@ -1,12 +1,12 @@
-package com.example.demo.adapters.web;
+package com.app.stack.adapters.web;
 
-import com.example.demo.generated.api.UsersApi;
-import com.example.demo.generated.model.User;
-import com.example.demo.generated.model.UserCreate;
-import com.example.demo.generated.model.UserListResponse;
-import com.example.demo.generated.model.UserStatus;
-import com.example.demo.generated.model.UserUpdate;
-import com.example.demo.users.application.UserService;
+import com.app.stack.generated.api.UsersApi;
+import com.app.stack.generated.model.User;
+import com.app.stack.generated.model.UserCreate;
+import com.app.stack.generated.model.UserListResponse;
+import com.app.stack.generated.model.UserStatus;
+import com.app.stack.generated.model.UserUpdate;
+import com.app.stack.users.application.UserService;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
