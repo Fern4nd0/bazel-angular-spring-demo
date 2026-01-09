@@ -1,6 +1,5 @@
 package com.app.stack.users.application;
 
-import com.app.stack.users.domain.port.UserRepository;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
@@ -9,8 +8,8 @@ import com.app.stack.users.domain.services.UserService;
 public class UserUseCase {
     private final UserService service;
 
-    public UserUseCase(UserRepository repository) {
-        this.service = new UserService(repository);
+    public UserUseCase(UserService service) {
+        this.service = service;
     }
 
     public UserPage listUsers(

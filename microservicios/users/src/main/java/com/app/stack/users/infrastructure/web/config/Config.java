@@ -7,6 +7,7 @@ import com.app.stack.users.infrastructure.persistence.repositories.JpaUserReposi
 import com.app.stack.users.infrastructure.persistence.repositories.UserEntityRepository;
 import com.app.stack.users.application.UserUseCase;
 import com.app.stack.users.domain.port.UserRepository;
+import com.app.stack.users.domain.services.UserService;
 import org.mapstruct.factory.Mappers;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -18,8 +19,13 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan(basePackageClasses = UserEntity.class)
 public class Config {
     @Bean
-    public UserUseCase userUseCase(UserRepository repository) {
-        return new UserUseCase(repository);
+    public UserUseCase userUseCase(UserService service) {
+        return new UserUseCase(service);
+    }
+
+    @Bean
+    public UserService userService(UserRepository repository) {
+        return new UserService(repository);
     }
 
     @Bean
