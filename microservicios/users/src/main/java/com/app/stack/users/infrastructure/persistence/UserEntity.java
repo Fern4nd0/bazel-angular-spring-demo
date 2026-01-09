@@ -1,6 +1,6 @@
 package com.app.stack.users.infrastructure.persistence;
 
-import com.app.stack.users.domain.UserStatus;
+import com.app.stack.users.domain.entities.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

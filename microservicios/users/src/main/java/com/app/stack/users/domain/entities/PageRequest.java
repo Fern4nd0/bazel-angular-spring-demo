@@ -1,4 +1,4 @@
-package com.app.stack.users.domain;
+package com.app.stack.users.domain.entities;
 
 import lombok.Getter;
 import lombok.Setter;

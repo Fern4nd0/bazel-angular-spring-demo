@@ -1,6 +1,6 @@
 package com.app.stack.users.infrastructure.persistence;
 
-import com.app.stack.users.domain.UserStatus;
+import com.app.stack.users.domain.entities.UserStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 final class UserSpecifications {

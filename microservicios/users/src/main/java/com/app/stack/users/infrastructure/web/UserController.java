@@ -7,7 +7,7 @@ import com.app.stack.generated.model.UserListResponse;
 import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
 import com.app.stack.users.application.UserUseCase;
-import com.app.stack.users.domain.UserPage;
+import com.app.stack.users.domain.entities.UserPage;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController

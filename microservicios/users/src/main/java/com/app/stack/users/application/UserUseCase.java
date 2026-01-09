@@ -1,10 +1,10 @@
 package com.app.stack.users.application;
 
-import com.app.stack.users.domain.PageRequest;
-import com.app.stack.users.domain.SortDirection;
-import com.app.stack.users.domain.User;
-import com.app.stack.users.domain.UserPage;
-import com.app.stack.users.domain.UserStatus;
+import com.app.stack.users.domain.entities.PageRequest;
+import com.app.stack.users.domain.entities.SortDirection;
+import com.app.stack.users.domain.entities.User;
+import com.app.stack.users.domain.entities.UserPage;
+import com.app.stack.users.domain.entities.UserStatus;
 import com.app.stack.users.domain.errors.DomainErrorCode;
 import com.app.stack.users.domain.errors.DomainException;
 import com.app.stack.users.application.port.UserRepository;

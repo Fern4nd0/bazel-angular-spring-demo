@@ -1,4 +1,4 @@
-package com.app.stack.users.domain;
+package com.app.stack.users.domain.entities;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
