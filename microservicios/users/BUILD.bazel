@@ -24,6 +24,7 @@ java_library(
         ["src/main/java/**/*.java"],
         exclude = ["src/main/java/com/example/demo/generated/**/*.java"],
     ) + [":openapi_generated_srcjar"],
+    resources = glob(["src/main/resources/**"]),
     deps = [
         "@maven//:org_springframework_boot_spring_boot",
         "@maven//:org_springframework_boot_spring_boot_autoconfigure",
