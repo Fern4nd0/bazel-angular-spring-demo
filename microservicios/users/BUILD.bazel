@@ -60,6 +60,9 @@ java_library(
 java_binary(
     name = "server",
     main_class = "com.app.stack.Application",
+    jvm_flags = [
+        "-Duser.timezone=UTC",
+    ],
     runtime_deps = [":app_lib"],
 )
 

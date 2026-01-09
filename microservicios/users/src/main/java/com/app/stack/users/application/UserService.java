@@ -8,6 +8,7 @@ import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
 import com.app.stack.users.domain.UserRepository;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Page;
@@ -66,7 +67,7 @@ public class UserService {
         String email = create.getEmail().trim();
         ensureEmailAvailable(email, null);
 
-        OffsetDateTime now = OffsetDateTime.now();
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         User user = new User();
         user.setEmail(email);
         user.setFirstName(create.getFirstName().trim());
@@ -114,7 +115,7 @@ public class UserService {
         if (update.getMetadata() != null) {
             user.setMetadata(update.getMetadata());
         }
-        user.setUpdatedAt(OffsetDateTime.now());
+        user.setUpdatedAt(OffsetDateTime.now(ZoneOffset.UTC));
         return repository.save(user);
     }
 
