@@ -1,0 +1,35 @@
+services:
+  redis:
+    image: bitnami/redis:7.2
+    environment:
+      # ALLOW_EMPTY_PASSWORD is recommended only for development.
+      - ALLOW_EMPTY_PASSWORD=yes
+    labels:
+      kompose.service.type: nodeport
+    ports:
+      - '6379:6379'
+    volumes:
+      - 'redis_data:/bitnami/redis'
+    networks:
+      - elk
+  postgres:
+    image: postgres:16.3
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+      - ./create_multiple_db.sh:/docker-entrypoint-initdb.d/create_multiple_db.sh:ro
+    ports:
+      - 1234:5432
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+    networks:
+      - elk
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  postgresdata:
+  redis_data:
+    driver: local

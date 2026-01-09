@@ -1,35 +1,47 @@
 # bazel-angular-spring-demo
 
-Monorepo con Spring Boot + Angular gestionado por Bazel.
+Monorepo with Spring Boot + Angular managed by Bazel.
 
-## Prerrequisitos
-- Bazel (7.x recomendado)
+## Prerequisites
+- Bazel (7.x recommended)
 - Java 17+
-- Node 20+ (para reglas JS y Angular CLI)
+- Node 20+ (for JS rules and Angular CLI)
 
-## Comandos principales
+## Main commands
 
 ### Backend
-- Arrancar servidor: `bazel run //microservicios/users:server`
+- Run server: `bazel run //microservicios/users:server`
 - Build: `bazel build //microservicios/users:server`
-- Tests unitarios: `bazel test //microservicios/users:app_test`
+- Unit tests: `bazel test //microservicios/users:app_test`
 
 ### OpenAPI (Swagger)
-- La API se define en `microservicios/users/src/main/resources/spec/openapi.yaml`.
-- Los modelos e interfaces se generan en build con Bazel (no se versionan).
-- Regenerar/compilar: `bazel build //microservicios/users:app_lib`
-- El código generado queda en `bazel-bin/microservicios/users/openapi-generated.srcjar`.
+- The API is defined in `microservicios/users/src/main/resources/spec/openapi.yaml`.
+- Models and interfaces are generated at build time with Bazel (not versioned).
+- Regenerate/build: `bazel build //microservicios/users:app_lib`
+- Generated code is packaged in `bazel-bin/microservicios/users/openapi-generated.srcjar`.
 
 ### Frontend
-- Arrancar dev server: `bazel run //front:devserver`
-- Build: `bazel build //front:build` (salida en `bazel-bin/front/dist`)
+- Run dev server: `bazel run //front:devserver`
+- Build: `bazel build //front:build` (output in `bazel-bin/front/dist`)
 
-## Probar flujo completo
-1. En una terminal: `bazel run //microservicios/users:server`
-2. En otra terminal: `bazel run //front:devserver`
-3. Abre `http://localhost:4200/home` y verifica que aparece "Hello from Spring Boot".
+## End-to-end flow
+1. In one terminal: `bazel run //microservicios/users:server`
+2. In another terminal: `bazel run //front:devserver`
+3. Open `http://localhost:4200/home` and verify "Hello from Spring Boot" appears.
 
-## Endpoints backend (segun OpenAPI)
+## Local infrastructure (Docker Compose)
+- Definition in `infrastructure/docker-compose.yml`.
+- Services: `redis` and `postgres`.
+- Ports: Redis `6379`, Postgres `1234` (host) -> `5432` (container).
+- Postgres credentials: user `postgres`, password `admin`, initial DB `test`.
+- Databases created automatically: `app_users` and `app_tracks` via `infrastructure/create_multiple_db.sh`.
+
+Start services:
+```bash
+docker compose -f infrastructure/docker-compose.yml up -d
+```
+
+## Backend endpoints (per OpenAPI)
 - `GET /users`
 - `POST /users`
 - `GET /users/search`
@@ -37,9 +49,9 @@ Monorepo con Spring Boot + Angular gestionado por Bazel.
 - `PATCH /users/{userId}`
 - `DELETE /users/{userId}`
 
-## Nota sobre dependencias npm
-Las dependencias npm se resuelven con `npm_translate_lock` a partir de `front/pnpm-lock.yaml`.
-Si cambias `front/package.json`, regenera el lockfile con:
+## Note about npm dependencies
+npm dependencies are resolved with `npm_translate_lock` from `front/pnpm-lock.yaml`.
+If you change `front/package.json`, regenerate the lockfile with:
 
 ```bash
 pnpm install --lockfile-only
