@@ -42,17 +42,17 @@ public class UserController implements UsersApi {
     }
 
     @Override
-    public User usersUserIdGet(String userId) {
+    public User usersUserIdGet(Long userId) {
         return service.getUser(userId);
     }
 
     @Override
-    public User usersUserIdPatch(String userId, UserUpdate userUpdate) {
+    public User usersUserIdPatch(Long userId, UserUpdate userUpdate) {
         return service.updateUser(userId, userUpdate);
     }
 
     @Override
-    public void usersUserIdDelete(String userId) {
+    public void usersUserIdDelete(Long userId) {
         service.deleteUser(userId);
     }
 }

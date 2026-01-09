@@ -199,8 +199,9 @@ components:
       required: true
       description: User ID
       schema:
-        type: string
-        example: "usr_123456"
+        type: integer
+        format: int64
+        example: 123456
 
     Page:
       name: page
@@ -288,8 +289,9 @@ components:
       required: [ id, email, firstName, lastName, status, role, createdAt, updatedAt ]
       properties:
         id:
-          type: string
-          example: "usr_123456"
+          type: integer
+          format: int64
+          example: 123456
         email:
           type: string
           format: email

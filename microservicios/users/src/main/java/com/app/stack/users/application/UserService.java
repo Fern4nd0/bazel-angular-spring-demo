@@ -8,13 +8,12 @@ import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
 import com.app.stack.users.domain.UserRepository;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,9 +34,9 @@ public class UserService {
             String sort,
             UserStatus status,
             String role) {
-        List<User> filtered = filterUsers(repository.findAll(), role, status);
-        sortUsers(filtered, sort);
-        return paginate(filtered, normalizePage(page), normalizePageSize(pageSize));
+        Pageable pageable = buildPageable(page, pageSize, sort);
+        Page<User> result = repository.findAll(pageable, status, role);
+        return toListResponse(result, normalizePage(page), normalizePageSize(pageSize));
     }
 
     public UserListResponse searchUsers(
@@ -48,9 +47,9 @@ public class UserService {
         if (query == null || query.trim().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing search text.");
         }
-        List<User> filtered = search(repository.findAll(), query.trim());
-        sortUsers(filtered, sort);
-        return paginate(filtered, normalizePage(page), normalizePageSize(pageSize));
+        Pageable pageable = buildPageable(page, pageSize, sort);
+        Page<User> result = repository.search(query.trim(), pageable);
+        return toListResponse(result, normalizePage(page), normalizePageSize(pageSize));
     }
 
     public User createUser(UserCreate create) {
@@ -63,7 +62,6 @@ public class UserService {
 
         OffsetDateTime now = OffsetDateTime.now();
         User user = new User();
-        user.setId("usr_" + UUID.randomUUID().toString().replace("-", ""));
         user.setEmail(email);
         user.setFirstName(create.getFirstName().trim());
         user.setLastName(create.getLastName().trim());
@@ -77,12 +75,12 @@ public class UserService {
         return repository.save(user);
     }
 
-    public User getUser(String id) {
+    public User getUser(Long id) {
         return repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found."));
     }
 
-    public User updateUser(String id, UserUpdate update) {
+    public User updateUser(Long id, UserUpdate update) {
         if (update == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing request body.");
         }
@@ -114,81 +112,19 @@ public class UserService {
         return repository.save(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Long id) {
         if (!repository.deleteById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found.");
         }
     }
 
-    private List<User> filterUsers(List<User> users, String role, UserStatus status) {
-        List<User> result = new ArrayList<>();
-        for (User user : users) {
-            if (role != null && !role.equalsIgnoreCase(user.getRole())) {
-                continue;
-            }
-            if (status != null && status != user.getStatus()) {
-                continue;
-            }
-            result.add(user);
-        }
-        return result;
+    private UserListResponse toListResponse(Page<User> page, int requestedPage, int requestedPageSize) {
+        int totalPages = Math.max(1, page.getTotalPages());
+        Pagination pagination = new Pagination(requestedPage, requestedPageSize, (int) page.getTotalElements(), totalPages);
+        return new UserListResponse(page.getContent(), pagination);
     }
 
-    private List<User> search(List<User> users, String query) {
-        String normalized = query.toLowerCase();
-        List<User> result = new ArrayList<>();
-        for (User user : users) {
-            if (containsIgnoreCase(user.getEmail(), normalized)
-                    || containsIgnoreCase(user.getFirstName(), normalized)
-                    || containsIgnoreCase(user.getLastName(), normalized)) {
-                result.add(user);
-            }
-        }
-        return result;
-    }
-
-    private void sortUsers(List<User> users, String sort) {
-        if (sort == null || sort.isBlank()) {
-            return;
-        }
-        String[] parts = sort.split(":", 2);
-        String field = parts[0].trim();
-        boolean desc = parts.length > 1 && "desc".equalsIgnoreCase(parts[1]);
-        Comparator<User> comparator = comparatorFor(field);
-        if (comparator == null) {
-            return;
-        }
-        users.sort(desc ? comparator.reversed() : comparator);
-    }
-
-    private Comparator<User> comparatorFor(String field) {
-        switch (field) {
-            case "createdAt":
-                return Comparator.comparing(User::getCreatedAt);
-            case "email":
-                return Comparator.comparing(User::getEmail, String.CASE_INSENSITIVE_ORDER);
-            case "firstName":
-                return Comparator.comparing(User::getFirstName, String.CASE_INSENSITIVE_ORDER);
-            case "lastName":
-                return Comparator.comparing(User::getLastName, String.CASE_INSENSITIVE_ORDER);
-            default:
-                return null;
-        }
-    }
-
-    private UserListResponse paginate(List<User> users, int page, int pageSize) {
-        int totalItems = users.size();
-        int totalPages = totalItems == 0 ? 1 : (int) Math.ceil(totalItems / (double) pageSize);
-        int fromIndex = Math.min((page - 1) * pageSize, totalItems);
-        int toIndex = Math.min(fromIndex + pageSize, totalItems);
-        List<User> items = fromIndex >= toIndex
-                ? Collections.emptyList()
-                : users.subList(fromIndex, toIndex);
-        Pagination pagination = new Pagination(page, pageSize, totalItems, totalPages);
-        return new UserListResponse(items, pagination);
-    }
-
-    private void ensureEmailAvailable(String email, String currentUserId) {
+    private void ensureEmailAvailable(String email, Long currentUserId) {
         Optional<User> existing = repository.findByEmail(email);
         if (existing.isPresent() && !existing.get().getId().equals(currentUserId)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email is already registered.");
@@ -209,13 +145,6 @@ public class UserService {
         return Math.min(pageSize, MAX_PAGE_SIZE);
     }
 
-    private boolean containsIgnoreCase(String value, String query) {
-        if (value == null) {
-            return false;
-        }
-        return value.toLowerCase().contains(query);
-    }
-
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
@@ -225,5 +154,32 @@ public class UserService {
             return null;
         }
         return value;
+    }
+
+    private Pageable buildPageable(Integer page, Integer pageSize, String sort) {
+        int normalizedPage = normalizePage(page) - 1;
+        int normalizedPageSize = normalizePageSize(pageSize);
+        Sort sortSpec = toSort(sort);
+        return PageRequest.of(normalizedPage, normalizedPageSize, sortSpec);
+    }
+
+    private Sort toSort(String sort) {
+        if (sort == null || sort.isBlank()) {
+            return Sort.unsorted();
+        }
+        String[] parts = sort.split(":", 2);
+        String field = parts[0].trim();
+        Sort.Direction direction = (parts.length > 1 && "desc".equalsIgnoreCase(parts[1]))
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+        switch (field) {
+            case "createdAt":
+            case "email":
+            case "firstName":
+            case "lastName":
+                return Sort.by(direction, field);
+            default:
+                return Sort.unsorted();
+        }
     }
 }
