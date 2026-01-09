@@ -40,14 +40,14 @@ java_library(
 
 java_binary(
     name = "server",
-    main_class = "com.example.demo.DemoApplication",
+    main_class = "com.example.demo.Application",
     runtime_deps = [":app_lib"],
 )
 
 java_test(
     name = "app_test",
     srcs = glob(["src/test/java/**/*.java"]),
-    test_class = "com.example.demo.adapters.web.HelloControllerTest",
+    test_class = "com.example.demo.ApplicationTest",
     deps = [
         ":app_lib",
         "@maven//:junit_junit",
