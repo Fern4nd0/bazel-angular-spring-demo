@@ -29,3 +29,7 @@ INSERT INTO users (email, first_name, last_name, role, status, phone, metadata, 
 ('marcos.lara@company.com', 'Marcos', 'Lara', 'user', 'ACTIVE', '+34 600 111 028', '{"locale":"es-ES","marketingOptIn":true}', '2026-01-07T10:42:30Z', '2026-01-07T10:47:00Z'),
 ('beatriz.leon@company.com', 'Beatriz', 'Leon', 'user', 'ACTIVE', '+34 600 111 029', '{"locale":"en-GB","marketingOptIn":false}', '2026-01-07T10:43:30Z', '2026-01-07T10:48:00Z'),
 ('gabriel.sierra@company.com', 'Gabriel', 'Sierra', 'manager', 'ACTIVE', '+34 600 111 030', '{"locale":"es-ES","marketingOptIn":true}', '2026-01-07T10:44:30Z', '2026-01-07T10:49:00Z');
+
+UPDATE users
+SET status = UPPER(status)
+WHERE status IN ('active', 'inactive', 'blocked');

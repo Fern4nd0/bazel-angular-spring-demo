@@ -22,15 +22,3 @@ databaseChangeLog:
         - sqlFile:
             path: db/changelog/rollback-seed-users.sql
             relativeToChangelogFile: false
-
-  - changeSet:
-      id: 003-normalize-user-status
-      author: codex
-      changes:
-        - sqlFile:
-            path: db/changelog/normalize-user-status.sql
-            relativeToChangelogFile: false
-      rollback:
-        - sqlFile:
-            path: db/changelog/rollback-normalize-user-status.sql
-            relativeToChangelogFile: false
