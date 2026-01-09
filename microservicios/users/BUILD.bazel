@@ -18,6 +18,12 @@ openapi_generated_srcjar(
     },
 )
 
+java_plugin(
+    name = "lombok_plugin",
+    processor_class = "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
+    deps = ["@maven//:org_projectlombok_lombok"],
+)
+
 java_library(
     name = "app_lib",
     srcs = glob(
@@ -25,6 +31,9 @@ java_library(
         exclude = ["src/main/java/com/app/stack/generated/**/*.java"],
     ) + [":openapi_generated_srcjar"],
     resources = glob(["src/main/resources/**"]),
+    plugins = [
+        ":lombok_plugin",
+    ],
     deps = [
         "@maven//:org_springframework_boot_spring_boot",
         "@maven//:org_springframework_boot_spring_boot_autoconfigure",
@@ -44,6 +53,7 @@ java_library(
         "@maven//:org_hibernate_orm_hibernate_core",
         "@maven//:org_liquibase_liquibase_core",
         "@maven//:org_postgresql_postgresql",
+        "@maven//:org_projectlombok_lombok",
     ],
 )
 

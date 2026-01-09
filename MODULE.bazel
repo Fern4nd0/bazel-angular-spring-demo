@@ -24,6 +24,7 @@ maven.install(
         "jakarta.validation:jakarta.validation-api:3.0.2",
         "org.liquibase:liquibase-core:4.27.0",
         "org.postgresql:postgresql:42.7.3",
+        "org.projectlombok:lombok:1.18.32",
         "org.openapitools:openapi-generator-cli:7.6.0",
         "junit:junit:4.13.2",
     ],
