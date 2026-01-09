@@ -81,10 +81,12 @@ java_binary(
 java_test(
     name = "app_test",
     srcs = glob(["src/test/java/**/*.java"]),
-    test_class = "com.app.stack.ApplicationTest",
+    test_class = "com.app.stack.AllTests",
     deps = [
         ":app_lib",
+        "@maven//:org_mapstruct_mapstruct",
         "@maven//:org_springframework_boot_spring_boot_autoconfigure",
+        "@maven//:org_springframework_spring_web",
         "@maven//:junit_junit",
     ],
 )

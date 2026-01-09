@@ -1,7 +1,8 @@
-package com.app.stack;
+package com.app.stack.users;
 
 import static org.junit.Assert.assertNotNull;
 
+import com.app.stack.Application;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
