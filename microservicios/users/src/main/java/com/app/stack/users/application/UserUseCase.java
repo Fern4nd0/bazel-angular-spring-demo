@@ -1,6 +1,6 @@
 package com.app.stack.users.application;
 
-import com.app.stack.users.application.port.UserRepository;
+import com.app.stack.users.domain.port.UserRepository;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;

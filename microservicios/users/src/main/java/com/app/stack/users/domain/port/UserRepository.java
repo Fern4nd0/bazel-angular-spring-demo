@@ -1,4 +1,4 @@
-package com.app.stack.users.application.port;
+package com.app.stack.users.domain.port;
 
 import com.app.stack.users.domain.entities.PageRequest;
 import com.app.stack.users.domain.entities.User;

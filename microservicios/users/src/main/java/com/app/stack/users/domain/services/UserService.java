@@ -1,6 +1,6 @@
 package com.app.stack.users.domain.services;
 
-import com.app.stack.users.application.port.UserRepository;
+import com.app.stack.users.domain.port.UserRepository;
 import com.app.stack.users.domain.entities.PageRequest;
 import com.app.stack.users.domain.entities.SortDirection;
 import com.app.stack.users.domain.entities.User;

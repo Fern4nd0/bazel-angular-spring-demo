@@ -6,7 +6,7 @@ import com.app.stack.users.infrastructure.persistence.mappers.UserPersistenceMap
 import com.app.stack.users.infrastructure.persistence.repositories.JpaUserRepositoryAdapter;
 import com.app.stack.users.infrastructure.persistence.repositories.UserEntityRepository;
 import com.app.stack.users.application.UserUseCase;
-import com.app.stack.users.application.port.UserRepository;
+import com.app.stack.users.domain.port.UserRepository;
 import org.mapstruct.factory.Mappers;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
