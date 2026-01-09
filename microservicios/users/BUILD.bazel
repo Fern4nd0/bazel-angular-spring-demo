@@ -28,6 +28,7 @@ java_library(
     deps = [
         "@maven//:org_springframework_boot_spring_boot",
         "@maven//:org_springframework_boot_spring_boot_autoconfigure",
+        "@maven//:org_springframework_boot_spring_boot_starter_jdbc",
         "@maven//:org_springframework_boot_spring_boot_starter_web",
         "@maven//:org_springframework_spring_context",
         "@maven//:org_springframework_spring_web",
@@ -36,6 +37,8 @@ java_library(
         "@maven//:io_swagger_core_v3_swagger_annotations",
         "@maven//:jakarta_annotation_jakarta_annotation_api",
         "@maven//:jakarta_validation_jakarta_validation_api",
+        "@maven//:org_liquibase_liquibase_core",
+        "@maven//:org_postgresql_postgresql",
     ],
 )
 

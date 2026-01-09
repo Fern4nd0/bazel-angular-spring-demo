@@ -11,6 +11,7 @@ maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(
     artifacts = [
         "org.springframework.boot:spring-boot-starter-web:3.2.5",
+        "org.springframework.boot:spring-boot-starter-jdbc:3.2.5",
         "org.springframework.boot:spring-boot:3.2.5",
         "org.springframework.boot:spring-boot-autoconfigure:3.2.5",
         "org.springframework:spring-context:6.1.6",
@@ -20,6 +21,8 @@ maven.install(
         "io.swagger.core.v3:swagger-annotations:2.2.21",
         "jakarta.annotation:jakarta.annotation-api:2.1.1",
         "jakarta.validation:jakarta.validation-api:3.0.2",
+        "org.liquibase:liquibase-core:4.27.0",
+        "org.postgresql:postgresql:42.7.3",
         "org.openapitools:openapi-generator-cli:7.6.0",
         "junit:junit:4.13.2",
     ],

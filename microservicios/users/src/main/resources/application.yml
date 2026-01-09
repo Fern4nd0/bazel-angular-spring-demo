@@ -1,2 +1,11 @@
 server:
   port: 8081
+
+spring:
+  datasource:
+    url: ${APP_DB_URL:jdbc:postgresql://localhost:1234/app_users}
+    username: ${APP_DB_USER:postgres}
+    password: ${APP_DB_PASSWORD:admin}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true

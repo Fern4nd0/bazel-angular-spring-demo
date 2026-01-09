@@ -1,0 +1,460 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users-table
+      author: codex
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: varchar(32)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone
+                  type: varchar(30)
+              - column:
+                  name: metadata
+                  type: jsonb
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: users
+            columnNames: email
+            constraintName: uq_users_email
+        - createIndex:
+            tableName: users
+            indexName: idx_users_status
+            columns:
+              - column:
+                  name: status
+
+  - changeSet:
+      id: 002-seed-users
+      author: codex
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0001" }
+              - column: { name: email, value: "ana.garcia@company.com" }
+              - column: { name: first_name, value: "Ana" }
+              - column: { name: last_name, value: "Garcia" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 001" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:15:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:20:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0002" }
+              - column: { name: email, value: "luis.rodriguez@company.com" }
+              - column: { name: first_name, value: "Luis" }
+              - column: { name: last_name, value: "Rodriguez" }
+              - column: { name: role, value: "admin" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 002" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:16:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:21:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0003" }
+              - column: { name: email, value: "maria.lopez@company.com" }
+              - column: { name: first_name, value: "Maria" }
+              - column: { name: last_name, value: "Lopez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 003" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:17:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:22:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0004" }
+              - column: { name: email, value: "javier.santos@company.com" }
+              - column: { name: first_name, value: "Javier" }
+              - column: { name: last_name, value: "Santos" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 004" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:18:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:23:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0005" }
+              - column: { name: email, value: "carmen.martin@company.com" }
+              - column: { name: first_name, value: "Carmen" }
+              - column: { name: last_name, value: "Martin" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "blocked" }
+              - column: { name: phone, value: "+34 600 111 005" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:19:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:24:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0006" }
+              - column: { name: email, value: "diego.navarro@company.com" }
+              - column: { name: first_name, value: "Diego" }
+              - column: { name: last_name, value: "Navarro" }
+              - column: { name: role, value: "manager" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 006" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:20:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:25:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0007" }
+              - column: { name: email, value: "lucia.hernandez@company.com" }
+              - column: { name: first_name, value: "Lucia" }
+              - column: { name: last_name, value: "Hernandez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 007" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-GB\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:21:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:26:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0008" }
+              - column: { name: email, value: "pablo.ruiz@company.com" }
+              - column: { name: first_name, value: "Pablo" }
+              - column: { name: last_name, value: "Ruiz" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 008" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:22:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:27:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0009" }
+              - column: { name: email, value: "sofia.diaz@company.com" }
+              - column: { name: first_name, value: "Sofia" }
+              - column: { name: last_name, value: "Diaz" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 009" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:23:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:28:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0010" }
+              - column: { name: email, value: "jorge.molina@company.com" }
+              - column: { name: first_name, value: "Jorge" }
+              - column: { name: last_name, value: "Molina" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 010" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:24:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:29:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0011" }
+              - column: { name: email, value: "paula.iglesias@company.com" }
+              - column: { name: first_name, value: "Paula" }
+              - column: { name: last_name, value: "Iglesias" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 011" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:25:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:30:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0012" }
+              - column: { name: email, value: "raul.sanchez@company.com" }
+              - column: { name: first_name, value: "Raul" }
+              - column: { name: last_name, value: "Sanchez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 012" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:26:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:31:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0013" }
+              - column: { name: email, value: "elena.castillo@company.com" }
+              - column: { name: first_name, value: "Elena" }
+              - column: { name: last_name, value: "Castillo" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 013" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:27:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:32:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0014" }
+              - column: { name: email, value: "alberto.ramos@company.com" }
+              - column: { name: first_name, value: "Alberto" }
+              - column: { name: last_name, value: "Ramos" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 014" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:28:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:33:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0015" }
+              - column: { name: email, value: "silvia.ortega@company.com" }
+              - column: { name: first_name, value: "Silvia" }
+              - column: { name: last_name, value: "Ortega" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "blocked" }
+              - column: { name: phone, value: "+34 600 111 015" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-GB\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:29:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:34:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0016" }
+              - column: { name: email, value: "adrian.gomez@company.com" }
+              - column: { name: first_name, value: "Adrian" }
+              - column: { name: last_name, value: "Gomez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 016" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:30:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:35:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0017" }
+              - column: { name: email, value: "marta.flores@company.com" }
+              - column: { name: first_name, value: "Marta" }
+              - column: { name: last_name, value: "Flores" }
+              - column: { name: role, value: "manager" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 017" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:31:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:36:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0018" }
+              - column: { name: email, value: "sergio.romero@company.com" }
+              - column: { name: first_name, value: "Sergio" }
+              - column: { name: last_name, value: "Romero" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 018" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:32:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:37:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0019" }
+              - column: { name: email, value: "laura.rios@company.com" }
+              - column: { name: first_name, value: "Laura" }
+              - column: { name: last_name, value: "Rios" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 019" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:33:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:38:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0020" }
+              - column: { name: email, value: "hugo.mendez@company.com" }
+              - column: { name: first_name, value: "Hugo" }
+              - column: { name: last_name, value: "Mendez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 020" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-GB\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:34:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:39:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0021" }
+              - column: { name: email, value: "isabel.vega@company.com" }
+              - column: { name: first_name, value: "Isabel" }
+              - column: { name: last_name, value: "Vega" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 021" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:35:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:40:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0022" }
+              - column: { name: email, value: "nico.marquez@company.com" }
+              - column: { name: first_name, value: "Nico" }
+              - column: { name: last_name, value: "Marquez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 022" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:36:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:41:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0023" }
+              - column: { name: email, value: "carla.crespo@company.com" }
+              - column: { name: first_name, value: "Carla" }
+              - column: { name: last_name, value: "Crespo" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 023" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:37:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:42:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0024" }
+              - column: { name: email, value: "david.prieto@company.com" }
+              - column: { name: first_name, value: "David" }
+              - column: { name: last_name, value: "Prieto" }
+              - column: { name: role, value: "admin" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 024" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-GB\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:38:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:43:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0025" }
+              - column: { name: email, value: "andrea.gutierrez@company.com" }
+              - column: { name: first_name, value: "Andrea" }
+              - column: { name: last_name, value: "Gutierrez" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 025" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:39:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:44:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0026" }
+              - column: { name: email, value: "victor.cano@company.com" }
+              - column: { name: first_name, value: "Victor" }
+              - column: { name: last_name, value: "Cano" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "inactive" }
+              - column: { name: phone, value: "+34 600 111 026" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-US\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:40:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:45:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0027" }
+              - column: { name: email, value: "nuria.soto@company.com" }
+              - column: { name: first_name, value: "Nuria" }
+              - column: { name: last_name, value: "Soto" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "blocked" }
+              - column: { name: phone, value: "+34 600 111 027" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:41:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:46:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0028" }
+              - column: { name: email, value: "marcos.lara@company.com" }
+              - column: { name: first_name, value: "Marcos" }
+              - column: { name: last_name, value: "Lara" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 028" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:42:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:47:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0029" }
+              - column: { name: email, value: "beatriz.leon@company.com" }
+              - column: { name: first_name, value: "Beatriz" }
+              - column: { name: last_name, value: "Leon" }
+              - column: { name: role, value: "user" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 029" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"en-GB\",\"marketingOptIn\":false}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:43:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:48:00Z" }
+        - insert:
+            tableName: users
+            columns:
+              - column: { name: id, value: "usr_0030" }
+              - column: { name: email, value: "gabriel.sierra@company.com" }
+              - column: { name: first_name, value: "Gabriel" }
+              - column: { name: last_name, value: "Sierra" }
+              - column: { name: role, value: "manager" }
+              - column: { name: status, value: "active" }
+              - column: { name: phone, value: "+34 600 111 030" }
+              - column: { name: metadata, valueComputed: "'{\"locale\":\"es-ES\",\"marketingOptIn\":true}'::jsonb" }
+              - column: { name: created_at, value: "2026-01-07T10:44:30Z" }
+              - column: { name: updated_at, value: "2026-01-07T10:49:00Z" }
