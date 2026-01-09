@@ -84,6 +84,7 @@ java_test(
     test_class = "com.app.stack.ApplicationTest",
     deps = [
         ":app_lib",
+        "@maven//:org_springframework_boot_spring_boot_autoconfigure",
         "@maven//:junit_junit",
     ],
 )
