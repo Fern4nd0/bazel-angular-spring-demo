@@ -1,4 +1,4 @@
-load("//back:openapi_codegen.bzl", "openapi_generated_srcjar")
+load("//filters:openapi_codegen.bzl", "openapi_generated_srcjar")
 
 openapi_generated_srcjar(
     name = "openapi_generated_srcjar",
