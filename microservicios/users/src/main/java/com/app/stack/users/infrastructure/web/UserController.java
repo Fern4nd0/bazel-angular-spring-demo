@@ -1,4 +1,4 @@
-package com.app.stack.adapters.web;
+package com.app.stack.users.infrastructure.web;
 
 import com.app.stack.generated.api.UsersApi;
 import com.app.stack.generated.model.User;
@@ -6,15 +6,18 @@ import com.app.stack.generated.model.UserCreate;
 import com.app.stack.generated.model.UserListResponse;
 import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
-import com.app.stack.users.application.UserService;
+import com.app.stack.users.application.UserUseCase;
+import com.app.stack.users.domain.UserPage;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController implements UsersApi {
-    private final UserService service;
+    private final UserUseCase service;
+    private final UserApiMapper mapper;
 
-    public UserController(UserService service) {
+    public UserController(UserUseCase service, UserApiMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @Override
@@ -24,12 +27,13 @@ public class UserController implements UsersApi {
             String sort,
             UserStatus status,
             String role) {
-        return service.listUsers(page, pageSize, sort, status, role);
+        UserPage result = service.listUsers(page, pageSize, sort, mapper.toDomain(status), role);
+        return mapper.toApi(result);
     }
 
     @Override
     public User usersPost(UserCreate userCreate) {
-        return service.createUser(userCreate);
+        return mapper.toApi(service.createUser(mapper.toDomain(userCreate)));
     }
 
     @Override
@@ -38,17 +42,18 @@ public class UserController implements UsersApi {
             Integer page,
             Integer pageSize,
             String sort) {
-        return service.searchUsers(q, page, pageSize, sort);
+        UserPage result = service.searchUsers(q, page, pageSize, sort);
+        return mapper.toApi(result);
     }
 
     @Override
     public User usersUserIdGet(Long userId) {
-        return service.getUser(userId);
+        return mapper.toApi(service.getUser(userId));
     }
 
     @Override
     public User usersUserIdPatch(Long userId, UserUpdate userUpdate) {
-        return service.updateUser(userId, userUpdate);
+        return mapper.toApi(service.updateUser(userId, mapper.toDomain(userUpdate)));
     }
 
     @Override

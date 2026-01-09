@@ -1,4 +1,4 @@
-package com.app.stack.users.infrastructure;
+package com.app.stack.users.infrastructure.persistence;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

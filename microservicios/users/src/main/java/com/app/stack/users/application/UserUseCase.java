@@ -1,25 +1,20 @@
 package com.app.stack.users.application;
 
-import com.app.stack.generated.model.Pagination;
-import com.app.stack.generated.model.User;
-import com.app.stack.generated.model.UserCreate;
-import com.app.stack.generated.model.UserListResponse;
-import com.app.stack.generated.model.UserStatus;
-import com.app.stack.generated.model.UserUpdate;
-import com.app.stack.users.domain.UserRepository;
+import com.app.stack.users.domain.PageRequest;
+import com.app.stack.users.domain.SortDirection;
+import com.app.stack.users.domain.User;
+import com.app.stack.users.domain.UserCreateData;
+import com.app.stack.users.domain.UserPage;
+import com.app.stack.users.domain.UserStatus;
+import com.app.stack.users.domain.UserUpdateData;
+import com.app.stack.users.domain.errors.DomainErrorCode;
+import com.app.stack.users.domain.errors.DomainException;
+import com.app.stack.users.application.port.UserRepository;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
-import org.springframework.http.HttpStatus;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
-@Service
-public class UserService {
+public class UserUseCase {
     private static final int DEFAULT_PAGE_SIZE = 20;
     private static final int MAX_PAGE_SIZE = 200;
     private static final String DEFAULT_ROLE = "user";
@@ -31,38 +26,36 @@ public class UserService {
 
     private final UserRepository repository;
 
-    public UserService(UserRepository repository) {
+    public UserUseCase(UserRepository repository) {
         this.repository = repository;
     }
 
-    public UserListResponse listUsers(
+    public UserPage listUsers(
             Integer page,
             Integer pageSize,
             String sort,
             UserStatus status,
             String role) {
-        Pageable pageable = buildPageable(page, pageSize, sort);
-        Page<User> result = repository.findUsers(pageable, status, role);
-        return toListResponse(result);
+        PageRequest pageRequest = buildPageRequest(page, pageSize, sort);
+        return repository.findUsers(pageRequest, status, role);
     }
 
-    public UserListResponse searchUsers(
+    public UserPage searchUsers(
             String query,
             Integer page,
             Integer pageSize,
             String sort) {
         if (query == null || query.trim().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_SEARCH_TEXT);
+            throw new DomainException(DomainErrorCode.INVALID_SEARCH_QUERY, MISSING_SEARCH_TEXT);
         }
-        Pageable pageable = buildPageable(page, pageSize, sort);
-        Page<User> result = repository.searchUsers(query.trim(), pageable);
-        return toListResponse(result);
+        PageRequest pageRequest = buildPageRequest(page, pageSize, sort);
+        return repository.searchUsers(query.trim(), pageRequest);
     }
 
-    public User createUser(UserCreate create) {
+    public User createUser(UserCreateData create) {
         if (create == null || isBlank(create.getEmail())
                 || isBlank(create.getFirstName()) || isBlank(create.getLastName())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_REQUIRED_FIELDS);
+            throw new DomainException(DomainErrorCode.INVALID_USER_DATA, MISSING_REQUIRED_FIELDS);
         }
         String email = create.getEmail().trim();
         ensureEmailAvailable(email, null);
@@ -84,12 +77,12 @@ public class UserService {
 
     public User getUser(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND));
+                .orElseThrow(() -> new DomainException(DomainErrorCode.USER_NOT_FOUND, USER_NOT_FOUND));
     }
 
-    public User updateUser(Long id, UserUpdate update) {
+    public User updateUser(Long id, UserUpdateData update) {
         if (update == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, MISSING_REQUEST_BODY);
+            throw new DomainException(DomainErrorCode.INVALID_USER_DATA, MISSING_REQUEST_BODY);
         }
         User user = getUser(id);
         if (!isBlank(update.getEmail())) {
@@ -121,20 +114,14 @@ public class UserService {
 
     public void deleteUser(Long id) {
         if (!repository.deleteById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, USER_NOT_FOUND);
+            throw new DomainException(DomainErrorCode.USER_NOT_FOUND, USER_NOT_FOUND);
         }
-    }
-
-    private UserListResponse toListResponse(Page<User> page) {
-        int totalPages = Math.max(1, page.getTotalPages());
-        Pagination pagination = new Pagination(page.getNumber() + 1, page.getSize(), (int) page.getTotalElements(), totalPages);
-        return new UserListResponse(page.getContent(), pagination);
     }
 
     private void ensureEmailAvailable(String email, Long currentUserId) {
         Optional<User> existing = repository.findByEmail(email);
         if (existing.isPresent() && !existing.get().getId().equals(currentUserId)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, EMAIL_ALREADY_REGISTERED);
+            throw new DomainException(DomainErrorCode.EMAIL_ALREADY_USED, EMAIL_ALREADY_REGISTERED);
         }
     }
 
@@ -164,30 +151,39 @@ public class UserService {
         return trimmed.isEmpty() ? null : trimmed;
     }
 
-    private Pageable buildPageable(Integer page, Integer pageSize, String sort) {
-        int normalizedPage = normalizePage(page) - 1;
-        int normalizedPageSize = normalizePageSize(pageSize);
-        Sort sortSpec = toSort(sort);
-        return PageRequest.of(normalizedPage, normalizedPageSize, sortSpec);
+    private PageRequest buildPageRequest(Integer page, Integer pageSize, String sort) {
+        PageRequest request = new PageRequest();
+        request.setPage(normalizePage(page));
+        request.setPageSize(normalizePageSize(pageSize));
+        applySort(request, sort);
+        return request;
     }
 
-    private Sort toSort(String sort) {
+    private void applySort(PageRequest request, String sort) {
         if (sort == null || sort.isBlank()) {
-            return Sort.unsorted();
+            return;
         }
         String[] parts = sort.split(":", 2);
         String field = parts[0].trim();
-        Sort.Direction direction = (parts.length > 1 && "desc".equalsIgnoreCase(parts[1]))
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
+        if (!isSortableField(field)) {
+            return;
+        }
+        SortDirection direction = (parts.length > 1 && "desc".equalsIgnoreCase(parts[1]))
+                ? SortDirection.DESC
+                : SortDirection.ASC;
+        request.setSortField(field);
+        request.setSortDirection(direction);
+    }
+
+    private boolean isSortableField(String field) {
         switch (field) {
             case "createdAt":
             case "email":
             case "firstName":
             case "lastName":
-                return Sort.by(direction, field);
+                return true;
             default:
-                return Sort.unsorted();
+                return false;
         }
     }
 }

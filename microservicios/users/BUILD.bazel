@@ -24,6 +24,15 @@ java_plugin(
     deps = ["@maven//:org_projectlombok_lombok"],
 )
 
+java_plugin(
+    name = "mapstruct_plugin",
+    processor_class = "org.mapstruct.ap.MappingProcessor",
+    deps = [
+        "@maven//:org_mapstruct_mapstruct_processor",
+        "@maven//:org_projectlombok_lombok_mapstruct_binding",
+    ],
+)
+
 java_library(
     name = "app_lib",
     srcs = glob(
@@ -33,6 +42,7 @@ java_library(
     resources = glob(["src/main/resources/**"]),
     plugins = [
         ":lombok_plugin",
+        ":mapstruct_plugin",
     ],
     deps = [
         "@maven//:org_springframework_boot_spring_boot",
@@ -41,6 +51,7 @@ java_library(
         "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
         "@maven//:org_springframework_boot_spring_boot_starter_web",
         "@maven//:org_springframework_spring_context",
+        "@maven//:org_springframework_spring_tx",
         "@maven//:org_springframework_spring_web",
         "@maven//:org_springframework_spring_webmvc",
         "@maven//:org_springframework_data_spring_data_commons",
@@ -52,6 +63,7 @@ java_library(
         "@maven//:jakarta_validation_jakarta_validation_api",
         "@maven//:org_hibernate_orm_hibernate_core",
         "@maven//:org_liquibase_liquibase_core",
+        "@maven//:org_mapstruct_mapstruct",
         "@maven//:org_postgresql_postgresql",
         "@maven//:org_projectlombok_lombok",
     ],
