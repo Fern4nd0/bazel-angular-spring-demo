@@ -3,7 +3,6 @@ package com.app.stack.users.infrastructure.web.handlers;
 import com.app.stack.generated.model.Error;
 import com.app.stack.users.domain.errors.DomainErrorCode;
 import com.app.stack.users.domain.errors.DomainException;
-import com.app.stack.users.infrastructure.persistence.repositories.UserPersistenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,11 +19,6 @@ public class UserErrorHandler {
             message = DomainErrorHttpMapping.resolveMessage(code);
         }
         return build(status, code.name(), message);
-    }
-
-    @ExceptionHandler(UserPersistenceException.class)
-    public ResponseEntity<Error> handlePersistence(UserPersistenceException ex) {
-        return build(HttpStatus.INTERNAL_SERVER_ERROR, "PERSISTENCE_ERROR", "Unexpected persistence error.");
     }
 
     private ResponseEntity<Error> build(HttpStatus status, String code, String message) {

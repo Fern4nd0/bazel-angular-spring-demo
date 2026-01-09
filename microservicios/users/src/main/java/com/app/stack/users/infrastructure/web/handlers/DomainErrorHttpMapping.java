@@ -7,7 +7,8 @@ public enum DomainErrorHttpMapping {
     USER_NOT_FOUND(DomainErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND),
     EMAIL_ALREADY_USED(DomainErrorCode.EMAIL_ALREADY_USED, HttpStatus.CONFLICT),
     INVALID_USER_DATA(DomainErrorCode.INVALID_USER_DATA, HttpStatus.BAD_REQUEST),
-    INVALID_SEARCH_QUERY(DomainErrorCode.INVALID_SEARCH_QUERY, HttpStatus.BAD_REQUEST);
+    INVALID_SEARCH_QUERY(DomainErrorCode.INVALID_SEARCH_QUERY, HttpStatus.BAD_REQUEST),
+    PERSISTENCE_ERROR(DomainErrorCode.PERSISTENCE_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final DomainErrorCode code;
     private final HttpStatus status;

@@ -4,7 +4,8 @@ public enum DomainErrorCode {
     USER_NOT_FOUND("User not found."),
     EMAIL_ALREADY_USED("Email is already registered."),
     INVALID_USER_DATA("Invalid user data."),
-    INVALID_SEARCH_QUERY("Invalid search query.");
+    INVALID_SEARCH_QUERY("Invalid search query."),
+    PERSISTENCE_ERROR("Unexpected persistence error.");
 
     private final String defaultMessage;
 

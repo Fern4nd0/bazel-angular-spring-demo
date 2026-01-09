@@ -6,6 +6,8 @@ import com.app.stack.users.domain.entities.SortDirection;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
+import com.app.stack.users.domain.errors.DomainErrorCode;
+import com.app.stack.users.domain.errors.DomainException;
 import com.app.stack.users.infrastructure.persistence.entities.UserEntity;
 import com.app.stack.users.infrastructure.persistence.mappers.UserPersistenceMapper;
 import java.util.Optional;
@@ -113,7 +115,7 @@ public class JpaUserRepositoryAdapter implements UserRepository {
         try {
             return action.get();
         } catch (DataAccessException ex) {
-            throw new UserPersistenceException(message, ex);
+            throw new DomainException(DomainErrorCode.PERSISTENCE_ERROR, message, ex);
         }
     }
 }
