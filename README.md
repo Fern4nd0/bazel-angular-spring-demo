@@ -10,22 +10,22 @@ Monorepo con Spring Boot + Angular gestionado por Bazel.
 ## Comandos principales
 
 ### Backend
-- Arrancar servidor: `bazel run //back:server`
-- Build: `bazel build //back:server`
-- Tests unitarios: `bazel test //back:app_test`
+- Arrancar servidor: `bazel run //microservicios/users:server`
+- Build: `bazel build //microservicios/users:server`
+- Tests unitarios: `bazel test //microservicios/users:app_test`
 
 ### OpenAPI (Swagger)
-- La API se define en `back/src/main/resources/spec/openapi.yaml`.
+- La API se define en `microservicios/users/src/main/resources/spec/openapi.yaml`.
 - Los modelos e interfaces se generan en build con Bazel (no se versionan).
-- Regenerar/compilar: `bazel build //back:app_lib`
-- El código generado queda en `bazel-bin/back/openapi-generated.srcjar`.
+- Regenerar/compilar: `bazel build //microservicios/users:app_lib`
+- El código generado queda en `bazel-bin/microservicios/users/openapi-generated.srcjar`.
 
 ### Frontend
 - Arrancar dev server: `bazel run //front:devserver`
 - Build: `bazel build //front:build` (salida en `bazel-bin/front/dist`)
 
 ## Probar flujo completo
-1. En una terminal: `bazel run //back:server`
+1. En una terminal: `bazel run //microservicios/users:server`
 2. En otra terminal: `bazel run //front:devserver`
 3. Abre `http://localhost:4200/home` y verifica que aparece "Hello from Spring Boot".
 
