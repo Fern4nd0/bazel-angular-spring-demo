@@ -1,4 +1,5 @@
 load("//filters:openapi_codegen.bzl", "openapi_generated_srcjar")
+load("//filters:java_plugins.bzl", "lombok_plugin", "mapstruct_plugin")
 
 openapi_generated_srcjar(
     name = "openapi_generated_srcjar",
@@ -18,21 +19,6 @@ openapi_generated_srcjar(
     },
 )
 
-java_plugin(
-    name = "lombok_plugin",
-    processor_class = "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
-    deps = ["@maven//:org_projectlombok_lombok"],
-)
-
-java_plugin(
-    name = "mapstruct_plugin",
-    processor_class = "org.mapstruct.ap.MappingProcessor",
-    deps = [
-        "@maven//:org_mapstruct_mapstruct_processor",
-        "@maven//:org_projectlombok_lombok_mapstruct_binding",
-    ],
-)
-
 java_library(
     name = "app_lib",
     srcs = glob(
@@ -41,8 +27,8 @@ java_library(
     ) + [":openapi_generated_srcjar"],
     resources = glob(["src/main/resources/**"]),
     plugins = [
-        ":lombok_plugin",
-        ":mapstruct_plugin",
+        lombok_plugin(),
+        mapstruct_plugin(),
     ],
     deps = [
         "@maven//:org_springframework_boot_spring_boot",
