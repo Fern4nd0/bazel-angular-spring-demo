@@ -1,0 +1,564 @@
+openapi: 3.0.3
+info:
+  title: User Position Tracking API
+  version: 1.0.0
+  description: >
+    API para registrar y consultar la posición de usuarios a lo largo del tiempo
+    (histórico por usuario y última posición disponible).
+servers:
+  - url: https://api.your-domain.com/v1
+tags:
+  - name: Positions
+    description: Operaciones de seguimiento de posiciones
+security:
+  - BearerAuth: []
+
+paths:
+  /positions:
+    post:
+      tags: [Positions]
+      summary: Registrar una posición
+      description: Registra un punto de posición para un usuario en un instante concreto.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PositionCreate'
+            example:
+              userId: usr_123456
+              recordedAt: '2026-01-08T09:15:30Z'
+              source: gps
+              point:
+                latitude: 40.416775
+                longitude: -3.703790
+                accuracyMeters: 8.5
+              metadata:
+                deviceId: dev_abc123
+                batteryPercent: 0.72
+      responses:
+        '201':
+          description: Posición registrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPosition'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+    get:
+      tags: [Positions]
+      summary: Listar últimas posiciones
+      description: Devuelve la última posición conocida por usuario (una por usuario), con paginación y filtros opcionales.
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: userId
+          in: query
+          required: false
+          description: Filtra por un usuario concreto
+          schema:
+            type: string
+            example: usr_123456
+        - name: recordedAfter
+          in: query
+          required: false
+          description: Solo posiciones con recordedAt posterior a esta fecha/hora
+          schema:
+            type: string
+            format: date-time
+            example: '2026-01-08T00:00:00Z'
+        - name: bbox
+          in: query
+          required: false
+          description: >
+            Bounding box como "west,south,east,north" (lon/lat). Ej: "-3.80,40.35,-3.60,40.50"
+          schema:
+            type: string
+            example: '-3.80,40.35,-3.60,40.50'
+      responses:
+        '200':
+          description: Últimas posiciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PositionListResponse'
+              example:
+                data:
+                  - id: pos_001
+                    userId: usr_123456
+                    recordedAt: '2026-01-08T09:15:30Z'
+                    receivedAt: '2026-01-08T09:15:31Z'
+                    source: gps
+                    point:
+                      latitude: 40.416775
+                      longitude: -3.703790
+                      accuracyMeters: 8.5
+                pagination:
+                  page: 1
+                  pageSize: 25
+                  totalItems: 1
+                  totalPages: 1
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users/{userId}/positions:
+    get:
+      tags: [Positions]
+      summary: Histórico de posiciones de un usuario
+      description: Devuelve el histórico de posiciones de un usuario en un rango temporal opcional.
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/PageSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: from
+          in: query
+          required: false
+          description: Inicio del rango (inclusive)
+          schema:
+            type: string
+            format: date-time
+            example: '2026-01-08T00:00:00Z'
+        - name: to
+          in: query
+          required: false
+          description: Fin del rango (exclusive)
+          schema:
+            type: string
+            format: date-time
+            example: '2026-01-09T00:00:00Z'
+      responses:
+        '200':
+          description: Histórico de posiciones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PositionListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /users/{userId}/positions/latest:
+    get:
+      tags: [Positions]
+      summary: Última posición de un usuario
+      description: Devuelve la última posición conocida del usuario.
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: Última posición
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPosition'
+              example:
+                id: pos_001
+                userId: usr_123456
+                recordedAt: '2026-01-08T09:15:30Z'
+                receivedAt: '2026-01-08T09:15:31Z'
+                source: gps
+                point:
+                  latitude: 40.416775
+                  longitude: -3.703790
+                  accuracyMeters: 8.5
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /positions/search:
+    post:
+      tags: [Positions]
+      summary: Buscar posiciones (avanzado)
+      description: >
+        Búsqueda avanzada por usuarios, rango temporal y filtro geoespacial (bbox).
+        Útil para consultas masivas o filtros complejos.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PositionSearchRequest'
+            example:
+              userIds: [usr_123456, usr_999999]
+              from: '2026-01-08T00:00:00Z'
+              to: '2026-01-09T00:00:00Z'
+              bbox:
+                west: -3.80
+                south: 40.35
+                east: -3.60
+                north: 40.50
+              page: 1
+              pageSize: 100
+              sort: recordedAt:desc
+      responses:
+        '200':
+          description: Resultados de búsqueda
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PositionListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /positions/{positionId}:
+    get:
+      tags: [Positions]
+      summary: Obtener una posición por id
+      description: Devuelve un registro de posición concreto.
+      parameters:
+        - $ref: '#/components/parameters/PositionId'
+      responses:
+        '200':
+          description: Posición
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPosition'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    UserId:
+      name: userId
+      in: path
+      required: true
+      description: Identificador del usuario
+      schema:
+        type: string
+        example: usr_123456
+
+    PositionId:
+      name: positionId
+      in: path
+      required: true
+      description: Identificador del registro de posición
+      schema:
+        type: string
+        example: pos_001
+
+    Page:
+      name: page
+      in: query
+      required: false
+      description: Número de página (1..N)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+        example: 1
+
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: Tamaño de página (1..200)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 25
+        example: 25
+
+    Sort:
+      name: sort
+      in: query
+      required: false
+      description: Ordenación "field:asc|desc" (p.ej., recordedAt:desc)
+      schema:
+        type: string
+        example: recordedAt:desc
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: BAD_REQUEST
+            message: Invalid parameters.
+            details:
+              - field: recordedAt
+                issue: Must be a valid RFC3339 date-time.
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: UNAUTHORIZED
+            message: Missing or invalid token.
+
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: NOT_FOUND
+            message: Resource not found.
+
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            code: SERVER_ERROR
+            message: Unexpected error.
+
+  schemas:
+    PositionSource:
+      type: string
+      description: Fuente de la localización
+      enum: [gps, wifi, cell, manual, unknown]
+      example: gps
+
+    GeoPoint:
+      type: object
+      required: [latitude, longitude]
+      properties:
+        latitude:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          example: 40.416775
+        longitude:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          example: -3.70379
+        altitudeMeters:
+          type: number
+          format: double
+          nullable: true
+          description: Altitud sobre el nivel del mar (metros)
+          example: 667.0
+        accuracyMeters:
+          type: number
+          format: double
+          nullable: true
+          description: Precisión estimada del punto (metros)
+          example: 8.5
+        headingDegrees:
+          type: number
+          format: double
+          nullable: true
+          description: Rumbo (0..360)
+          example: 182.0
+        speedMps:
+          type: number
+          format: double
+          nullable: true
+          description: Velocidad (metros/segundo)
+          example: 1.4
+
+    UserPosition:
+      type: object
+      required: [id, userId, point, source, recordedAt, receivedAt]
+      properties:
+        id:
+          type: string
+          example: pos_001
+        userId:
+          type: string
+          example: usr_123456
+        point:
+          $ref: '#/components/schemas/GeoPoint'
+        source:
+          $ref: '#/components/schemas/PositionSource'
+        recordedAt:
+          type: string
+          format: date-time
+          description: Momento real de la medición (cliente/dispositivo)
+          example: '2026-01-08T09:15:30Z'
+        receivedAt:
+          type: string
+          format: date-time
+          description: Momento de recepción/ingesta en el servidor
+          example: '2026-01-08T09:15:31Z'
+        metadata:
+          type: object
+          additionalProperties: true
+          description: Campos extra opcionales (sin tipado)
+          example:
+            deviceId: dev_abc123
+            batteryPercent: 0.72
+
+    PositionCreate:
+      type: object
+      required: [userId, point, recordedAt]
+      properties:
+        userId:
+          type: string
+          example: usr_123456
+        point:
+          $ref: '#/components/schemas/GeoPoint'
+        source:
+          $ref: '#/components/schemas/PositionSource'
+        recordedAt:
+          type: string
+          format: date-time
+          description: Momento del punto en el dispositivo
+          example: '2026-01-08T09:15:30Z'
+        metadata:
+          type: object
+          additionalProperties: true
+          nullable: true
+          description: Campos extra opcionales (sin tipado)
+
+    BoundingBox:
+      type: object
+      required: [west, south, east, north]
+      properties:
+        west:
+          type: number
+          format: double
+          description: Longitud mínima
+          example: -3.80
+        south:
+          type: number
+          format: double
+          description: Latitud mínima
+          example: 40.35
+        east:
+          type: number
+          format: double
+          description: Longitud máxima
+          example: -3.60
+        north:
+          type: number
+          format: double
+          description: Latitud máxima
+          example: 40.50
+
+    PositionSearchRequest:
+      type: object
+      properties:
+        userIds:
+          type: array
+          items:
+            type: string
+          description: Lista de usuarios a incluir
+          example: [usr_123456, usr_999999]
+        from:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-01-08T00:00:00Z'
+        to:
+          type: string
+          format: date-time
+          nullable: true
+          example: '2026-01-09T00:00:00Z'
+        bbox:
+          $ref: '#/components/schemas/BoundingBox'
+        page:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+        pageSize:
+          type: integer
+          minimum: 1
+          maximum: 200
+          default: 25
+          example: 100
+        sort:
+          type: string
+          description: Ordenación "recordedAt:asc|desc"
+          example: recordedAt:desc
+
+    Pagination:
+      type: object
+      required: [page, pageSize, totalItems, totalPages]
+      properties:
+        page:
+          type: integer
+          example: 1
+        pageSize:
+          type: integer
+          example: 25
+        totalItems:
+          type: integer
+          example: 100
+        totalPages:
+          type: integer
+          example: 4
+
+    PositionListResponse:
+      type: object
+      required: [data, pagination]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPosition'
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+
+    ErrorDetail:
+      type: object
+      properties:
+        field:
+          type: string
+          example: recordedAt
+        issue:
+          type: string
+          example: Must be a valid RFC3339 date-time.
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          example: BAD_REQUEST
+        message:
+          type: string
+          example: Invalid parameters.
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorDetail'

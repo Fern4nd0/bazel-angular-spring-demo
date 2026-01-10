@@ -1,0 +1,92 @@
+load("//filters:openapi_codegen.bzl", "openapi_generated_srcjar")
+
+openapi_generated_srcjar(
+    name = "openapi_generated_srcjar",
+    spec = "src/main/resources/spec/openapi.yaml",
+    api_package = "com.app.stack.generated.api",
+    model_package = "com.app.stack.generated.model",
+    generator_name = "spring",
+    additional_properties = {
+        "useSpringBoot3": True,
+        "interfaceOnly": True,
+        "skipDefaultInterface": True,
+        "useTags": True,
+        "useBeanValidation": False,
+        "openApiNullable": False,
+        "dateLibrary": "java8",
+        "useResponseEntity": False,
+    },
+)
+
+java_plugin(
+    name = "lombok_plugin",
+    processor_class = "lombok.launch.AnnotationProcessorHider$AnnotationProcessor",
+    deps = ["@maven//:org_projectlombok_lombok"],
+)
+
+java_plugin(
+    name = "mapstruct_plugin",
+    processor_class = "org.mapstruct.ap.MappingProcessor",
+    deps = [
+        "@maven//:org_mapstruct_mapstruct_processor",
+        "@maven//:org_projectlombok_lombok_mapstruct_binding",
+    ],
+)
+
+java_library(
+    name = "app_lib",
+    srcs = glob(
+        ["src/main/java/**/*.java"],
+        exclude = ["src/main/java/com/app/stack/generated/**/*.java"],
+    ) + [":openapi_generated_srcjar"],
+    resources = glob(["src/main/resources/**"]),
+    plugins = [
+        ":lombok_plugin",
+        ":mapstruct_plugin",
+    ],
+    deps = [
+        "@maven//:org_springframework_boot_spring_boot",
+        "@maven//:org_springframework_boot_spring_boot_autoconfigure",
+        "@maven//:org_springframework_boot_spring_boot_starter_jdbc",
+        "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
+        "@maven//:org_springframework_boot_spring_boot_starter_web",
+        "@maven//:org_springframework_spring_context",
+        "@maven//:org_springframework_spring_tx",
+        "@maven//:org_springframework_spring_web",
+        "@maven//:org_springframework_spring_webmvc",
+        "@maven//:org_springframework_data_spring_data_commons",
+        "@maven//:org_springframework_data_spring_data_jpa",
+        "@maven//:com_fasterxml_jackson_core_jackson_annotations",
+        "@maven//:io_swagger_core_v3_swagger_annotations",
+        "@maven//:jakarta_persistence_jakarta_persistence_api",
+        "@maven//:jakarta_annotation_jakarta_annotation_api",
+        "@maven//:jakarta_validation_jakarta_validation_api",
+        "@maven//:org_hibernate_orm_hibernate_core",
+        "@maven//:org_liquibase_liquibase_core",
+        "@maven//:org_mapstruct_mapstruct",
+        "@maven//:org_postgresql_postgresql",
+        "@maven//:org_projectlombok_lombok",
+    ],
+)
+
+java_binary(
+    name = "server",
+    main_class = "com.app.stack.Application",
+    jvm_flags = [
+        "-Duser.timezone=UTC",
+    ],
+    runtime_deps = [":app_lib"],
+)
+
+java_test(
+    name = "app_test",
+    srcs = glob(["src/test/java/**/*.java"]),
+    test_class = "com.app.stack.AllTests",
+    deps = [
+        ":app_lib",
+        "@maven//:org_mapstruct_mapstruct",
+        "@maven//:org_springframework_boot_spring_boot_autoconfigure",
+        "@maven//:org_springframework_spring_web",
+        "@maven//:junit_junit",
+    ],
+)

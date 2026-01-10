@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-positions-table
+      author: codex
+      changes:
+        - sqlFile:
+            path: db/changelog/create-positions-table.sql
+            relativeToChangelogFile: false
+      rollback:
+        - sqlFile:
+            path: db/changelog/rollback-create-positions-table.sql
+            relativeToChangelogFile: false
