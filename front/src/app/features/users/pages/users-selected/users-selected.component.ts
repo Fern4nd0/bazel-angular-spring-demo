@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserSelectionService } from '../../../services/user-selection.service';
+import { UserSelectionService } from '../../data-access/user-selection.service';
 
 @Component({
   selector: 'app-users-selected',

@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserSelectionService } from '../../../services/user-selection.service';
-import { User, UserListResponse, UserQueryParams, UsersService, UserStatus } from '../../../services/users.service';
+import { UserSelectionService } from '../../data-access/user-selection.service';
+import { User, UserListResponse, UserQueryParams, UsersService, UserStatus } from '../../data-access/users.service';
 
 @Component({
   selector: 'app-users-list',

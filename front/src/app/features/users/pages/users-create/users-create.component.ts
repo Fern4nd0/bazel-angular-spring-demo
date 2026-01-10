@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserSelectionService } from '../../../services/user-selection.service';
-import { UserCreate, UsersService } from '../../../services/users.service';
+import { UserSelectionService } from '../../data-access/user-selection.service';
+import { UserCreate, UsersService } from '../../data-access/users.service';
 
 @Component({
   selector: 'app-users-create',

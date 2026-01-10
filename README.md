@@ -24,6 +24,14 @@ Monorepo with Spring Boot + Angular managed by Bazel.
 - Run dev server: `bazel run //front:devserver`
 - Build: `bazel build //front:build` (output in `bazel-bin/front/dist`)
 
+## Frontend architecture
+- Angular with standalone components and feature-based routing.
+- Lazy loaded features via `loadChildren` (see `front/src/app/app.routes.ts`).
+- Feature structure lives under `front/src/app/features/`.
+  - Example: `front/src/app/features/users/` contains `users.routes.ts`, `pages/`, and `data-access/`.
+- Global pages (simple screens) live under `front/src/app/pages/`.
+- Feature data-access services live under each feature `data-access/` folder.
+
 ## End-to-end flow
 1. In one terminal: `bazel run //microservicios/users:server`
 2. In another terminal: `bazel run //front:devserver`
