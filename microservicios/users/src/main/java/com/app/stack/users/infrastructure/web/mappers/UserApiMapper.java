@@ -4,25 +4,27 @@ import com.app.stack.generated.model.Pagination;
 import com.app.stack.generated.model.UserCreate;
 import com.app.stack.generated.model.UserListResponse;
 import com.app.stack.generated.model.UserUpdate;
+import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
+import com.app.stack.users.domain.entities.UserStatus;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper
 public interface UserApiMapper {
-    com.app.stack.generated.model.User toApi(com.app.stack.users.domain.entities.User user);
+    com.app.stack.generated.model.User toApi(User user);
 
     @Mapping(target = "status", source = "status")
-    com.app.stack.users.domain.entities.User toDomain(com.app.stack.generated.model.User user);
+    User toDomain(com.app.stack.generated.model.User user);
 
-    com.app.stack.users.domain.entities.User toDomain(UserCreate create);
+    User toDomain(UserCreate create);
 
-    com.app.stack.users.domain.entities.User toDomain(UserUpdate update);
+    User toDomain(UserUpdate update);
 
-    com.app.stack.users.domain.entities.UserStatus toDomain(com.app.stack.generated.model.UserStatus status);
+    UserStatus toDomain(com.app.stack.generated.model.UserStatus status);
 
-    com.app.stack.generated.model.UserStatus toApi(com.app.stack.users.domain.entities.UserStatus status);
+    com.app.stack.generated.model.UserStatus toApi(UserStatus status);
 
     default UserListResponse toApi(UserPage page) {
         UserListResponse response = new UserListResponse();
