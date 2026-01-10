@@ -5,7 +5,6 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import com.app.stack.users.domain.entities.PageRequest;
-import com.app.stack.users.domain.entities.SortDirection;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
@@ -16,19 +15,20 @@ import org.junit.Test;
 
 public class UserUseCaseTest {
     @Test
-    public void listUsersNormalizesPageAndSort() {
+    public void listUsersDelegatesToService() {
         RecordingUserService service = new RecordingUserService();
         UserUseCase useCase = new UserUseCase(service);
         UserPage expected = new UserPage();
         service.listUsersResult = expected;
 
-        UserPage result = useCase.listUsers(0, 500, "email:desc", UserStatus.ACTIVE, "admin");
+        PageRequest pageRequest = new PageRequest();
+        pageRequest.setPage(2);
+        pageRequest.setPageSize(10);
+        pageRequest.setSortField("email");
+        UserPage result = useCase.listUsers(pageRequest, UserStatus.ACTIVE, "admin");
 
         assertSame(expected, result);
-        assertEquals(1, service.pageRequest.getPage());
-        assertEquals(200, service.pageRequest.getPageSize());
-        assertEquals("email", service.pageRequest.getSortField());
-        assertEquals(SortDirection.DESC, service.pageRequest.getSortDirection());
+        assertSame(pageRequest, service.pageRequest);
         assertEquals(UserStatus.ACTIVE, service.status);
         assertEquals("admin", service.role);
     }
@@ -40,14 +40,15 @@ public class UserUseCaseTest {
         UserPage expected = new UserPage();
         service.searchUsersResult = expected;
 
-        UserPage result = useCase.searchUsers("john", 1, 10, "createdAt:desc");
+        PageRequest pageRequest = new PageRequest();
+        pageRequest.setPage(1);
+        pageRequest.setPageSize(10);
+        pageRequest.setSortField("createdAt");
+        UserPage result = useCase.searchUsers("john", pageRequest);
 
         assertSame(expected, result);
         assertEquals("john", service.query);
-        assertEquals(1, service.pageRequest.getPage());
-        assertEquals(10, service.pageRequest.getPageSize());
-        assertEquals("createdAt", service.pageRequest.getSortField());
-        assertEquals(SortDirection.DESC, service.pageRequest.getSortDirection());
+        assertSame(pageRequest, service.pageRequest);
     }
 
     @Test

@@ -1,22 +1,14 @@
 package com.app.stack.users.application.port;
 
+import com.app.stack.users.domain.entities.PageRequest;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
 
 public interface UserUseCasePort {
-    UserPage listUsers(
-            Integer page,
-            Integer pageSize,
-            String sort,
-            UserStatus status,
-            String role);
+    UserPage listUsers(PageRequest pageRequest, UserStatus status, String role);
 
-    UserPage searchUsers(
-            String query,
-            Integer page,
-            Integer pageSize,
-            String sort);
+    UserPage searchUsers(String query, PageRequest pageRequest);
 
     User createUser(User create);
 
