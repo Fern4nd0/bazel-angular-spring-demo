@@ -19,7 +19,7 @@ public class PositionUseCase implements PositionUseCasePort {
     @Override
     public PositionPage listLatestPositions(
             PageRequest pageRequest,
-            String userId,
+            Long userId,
             OffsetDateTime recordedAfter,
             BoundingBox bbox) {
         return service.listLatestPositions(pageRequest, userId, recordedAfter, bbox);
@@ -27,7 +27,7 @@ public class PositionUseCase implements PositionUseCasePort {
 
     @Override
     public PositionPage listUserHistory(
-            String userId,
+            Long userId,
             PageRequest pageRequest,
             OffsetDateTime from,
             OffsetDateTime to) {
@@ -50,7 +50,7 @@ public class PositionUseCase implements PositionUseCasePort {
     }
 
     @Override
-    public Position getLatestPosition(String userId) {
+    public Position getLatestPosition(Long userId) {
         return service.getLatestPosition(userId);
     }
 }

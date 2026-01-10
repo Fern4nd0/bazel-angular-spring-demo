@@ -4,17 +4,17 @@ import java.time.OffsetDateTime;
 import java.util.List;
 
 public class PositionSearchCriteria {
-    private List<String> userIds;
+    private List<Long> userIds;
     private OffsetDateTime from;
     private OffsetDateTime to;
     private BoundingBox bbox;
     private PageRequest pageRequest;
 
-    public List<String> getUserIds() {
+    public List<Long> getUserIds() {
         return userIds;
     }
 
-    public void setUserIds(List<String> userIds) {
+    public void setUserIds(List<Long> userIds) {
         this.userIds = userIds;
     }
 

@@ -32,7 +32,7 @@ public class PositionService {
         if (create.getId() != null || create.getReceivedAt() != null) {
             throw new DomainException(DomainErrorCode.INVALID_POSITION_DATA, "Immutable fields are not allowed on create.");
         }
-        if (isBlank(create.getUserId()) || create.getPoint() == null || create.getRecordedAt() == null) {
+        if (create.getUserId() == null || create.getPoint() == null || create.getRecordedAt() == null) {
             throw new DomainException(DomainErrorCode.INVALID_POSITION_DATA, MISSING_REQUIRED_FIELDS);
         }
         GeoPoint point = create.getPoint();
@@ -42,7 +42,7 @@ public class PositionService {
 
         Position position = new Position();
         position.setId(generateId());
-        position.setUserId(create.getUserId().trim());
+        position.setUserId(create.getUserId());
         position.setPoint(point);
         position.setSource(create.getSource() == null ? PositionSource.UNKNOWN : create.getSource());
         position.setRecordedAt(create.getRecordedAt());
@@ -60,31 +60,31 @@ public class PositionService {
                 .orElseThrow(() -> new DomainException(DomainErrorCode.POSITION_NOT_FOUND, POSITION_NOT_FOUND));
     }
 
-    public Position getLatestPosition(String userId) {
-        if (isBlank(userId)) {
+    public Position getLatestPosition(Long userId) {
+        if (userId == null) {
             throw new DomainException(DomainErrorCode.INVALID_POSITION_DATA, MISSING_REQUIRED_FIELDS);
         }
-        return repository.findLatestByUserId(userId.trim())
+        return repository.findLatestByUserId(userId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.POSITION_NOT_FOUND, POSITION_NOT_FOUND));
     }
 
     public PositionPage listLatestPositions(
             PageRequest pageRequest,
-            String userId,
+            Long userId,
             OffsetDateTime recordedAfter,
             BoundingBox bbox) {
-        return repository.findLatestPositions(pageRequest, trimToNull(userId), recordedAfter, bbox);
+        return repository.findLatestPositions(pageRequest, userId, recordedAfter, bbox);
     }
 
     public PositionPage listUserHistory(
-            String userId,
+            Long userId,
             PageRequest pageRequest,
             OffsetDateTime from,
             OffsetDateTime to) {
-        if (isBlank(userId)) {
+        if (userId == null) {
             throw new DomainException(DomainErrorCode.INVALID_SEARCH_QUERY, MISSING_REQUIRED_FIELDS);
         }
-        return repository.findUserHistory(userId.trim(), pageRequest, from, to);
+        return repository.findUserHistory(userId, pageRequest, from, to);
     }
 
     public PositionPage searchPositions(PositionSearchCriteria criteria) {
@@ -102,14 +102,6 @@ public class PositionService {
 
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
-    }
-
-    private String trimToNull(String value) {
-        if (value == null) {
-            return null;
-        }
-        String trimmed = value.trim();
-        return trimmed.isEmpty() ? null : trimmed;
     }
 
     private String generateId() {

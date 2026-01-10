@@ -10,12 +10,12 @@ import java.time.OffsetDateTime;
 public interface PositionUseCasePort {
     PositionPage listLatestPositions(
             PageRequest pageRequest,
-            String userId,
+            Long userId,
             OffsetDateTime recordedAfter,
             BoundingBox bbox);
 
     PositionPage listUserHistory(
-            String userId,
+            Long userId,
             PageRequest pageRequest,
             OffsetDateTime from,
             OffsetDateTime to);
@@ -26,5 +26,5 @@ public interface PositionUseCasePort {
 
     Position getPosition(String id);
 
-    Position getLatestPosition(String userId);
+    Position getLatestPosition(Long userId);
 }

@@ -31,7 +31,7 @@ public class PositionServiceTest {
         PositionService service = new PositionService(new InMemoryPositionRepository());
 
         Position create = new Position();
-        create.setUserId("  usr_123 ");
+        create.setUserId(123L);
         GeoPoint point = new GeoPoint();
         point.setLatitude(40.0);
         point.setLongitude(-3.0);
@@ -41,7 +41,7 @@ public class PositionServiceTest {
         Position saved = service.createPosition(create);
 
         assertNotNull(saved.getId());
-        assertEquals("usr_123", saved.getUserId());
+        assertEquals(Long.valueOf(123L), saved.getUserId());
         assertEquals(PositionSource.UNKNOWN, saved.getSource());
         assertNotNull(saved.getReceivedAt());
         assertSame(point, saved.getPoint());
@@ -52,7 +52,7 @@ public class PositionServiceTest {
         PositionService service = new PositionService(new InMemoryPositionRepository());
         Position create = new Position();
         create.setId("pos_1");
-        create.setUserId("usr_123");
+        create.setUserId(123L);
         GeoPoint point = new GeoPoint();
         point.setLatitude(40.0);
         point.setLongitude(-3.0);
@@ -71,7 +71,7 @@ public class PositionServiceTest {
     public void listUserHistoryRequiresUserId() {
         PositionService service = new PositionService(new InMemoryPositionRepository());
         try {
-            service.listUserHistory(" ", pageRequest(1, 10, null, null), null, null);
+            service.listUserHistory(null, pageRequest(1, 10, null, null), null, null);
             fail("Expected DomainException");
         } catch (DomainException ex) {
             assertEquals(DomainErrorCode.INVALID_SEARCH_QUERY, ex.getCode());
@@ -114,18 +114,18 @@ public class PositionServiceTest {
         }
 
         @Override
-        public Optional<Position> findLatestByUserId(String userId) {
+        public Optional<Position> findLatestByUserId(Long userId) {
             return Optional.empty();
         }
 
         @Override
-        public PositionPage findLatestPositions(PageRequest pageRequest, String userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
+        public PositionPage findLatestPositions(PageRequest pageRequest, Long userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
             lastPageRequest = pageRequest;
             return buildPage(pageRequest, Collections.emptyList());
         }
 
         @Override
-        public PositionPage findUserHistory(String userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
+        public PositionPage findUserHistory(Long userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
             lastPageRequest = pageRequest;
             return buildPage(pageRequest, Collections.emptyList());
         }

@@ -18,7 +18,7 @@ public class PositionApiMapperTest {
     public void mapsPositionPageToResponse() {
         PositionApiMapper mapper = Mappers.getMapper(PositionApiMapper.class);
         Position position = new Position();
-        position.setUserId("usr_1");
+        position.setUserId(1L);
         position.setSource(com.app.stack.trackings.domain.entities.PositionSource.GPS);
         GeoPoint point = new GeoPoint();
         point.setLatitude(40.0);

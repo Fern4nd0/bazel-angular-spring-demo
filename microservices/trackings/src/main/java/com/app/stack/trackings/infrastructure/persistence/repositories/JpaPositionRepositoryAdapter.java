@@ -35,7 +35,7 @@ public class JpaPositionRepositoryAdapter implements PositionRepository {
     }
 
     @Override
-    public Optional<Position> findLatestByUserId(String userId) {
+    public Optional<Position> findLatestByUserId(Long userId) {
         if (userId == null) {
             return Optional.empty();
         }
@@ -44,7 +44,7 @@ public class JpaPositionRepositoryAdapter implements PositionRepository {
     }
 
     @Override
-    public PositionPage findLatestPositions(PageRequest pageRequest, String userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
+    public PositionPage findLatestPositions(PageRequest pageRequest, Long userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
         Specification<PositionEntity> spec = Specification
                 .where(PositionSpecifications.hasUserId(userId))
                 .and(PositionSpecifications.recordedAfter(recordedAfter))
@@ -55,7 +55,7 @@ public class JpaPositionRepositoryAdapter implements PositionRepository {
     }
 
     @Override
-    public PositionPage findUserHistory(String userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
+    public PositionPage findUserHistory(Long userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
         Specification<PositionEntity> spec = Specification
                 .where(PositionSpecifications.hasUserId(userId))
                 .and(PositionSpecifications.recordedFrom(from))

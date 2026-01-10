@@ -9,16 +9,16 @@ import org.springframework.data.jpa.domain.Specification;
 public final class PositionSpecifications {
     private PositionSpecifications() {}
 
-    public static Specification<PositionEntity> hasUserId(String userId) {
+    public static Specification<PositionEntity> hasUserId(Long userId) {
         return (root, query, cb) -> {
-            if (userId == null || userId.trim().isEmpty()) {
+            if (userId == null) {
                 return null;
             }
-            return cb.equal(root.get("userId"), userId.trim());
+            return cb.equal(root.get("userId"), userId);
         };
     }
 
-    public static Specification<PositionEntity> hasUserIds(List<String> userIds) {
+    public static Specification<PositionEntity> hasUserIds(List<Long> userIds) {
         return (root, query, cb) -> {
             if (userIds == null || userIds.isEmpty()) {
                 return null;

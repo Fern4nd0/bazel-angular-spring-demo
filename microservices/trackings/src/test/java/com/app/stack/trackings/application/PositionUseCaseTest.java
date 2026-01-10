@@ -27,11 +27,11 @@ public class PositionUseCaseTest {
         request.setPage(1);
         request.setPageSize(10);
         request.setSortField("recordedAt");
-        PositionPage result = useCase.listLatestPositions(request, "usr_1", null, null);
+        PositionPage result = useCase.listLatestPositions(request, 1L, null, null);
 
         assertSame(expected, result);
         assertSame(request, service.pageRequest);
-        assertEquals("usr_1", service.userId);
+        assertEquals(Long.valueOf(1L), service.userId);
     }
 
     @Test
@@ -81,10 +81,10 @@ public class PositionUseCaseTest {
         Position expected = new Position();
         service.latestResult = expected;
 
-        Position result = useCase.getLatestPosition("usr_1");
+        Position result = useCase.getLatestPosition(1L);
 
         assertSame(expected, result);
-        assertEquals("usr_1", service.userId);
+        assertEquals(Long.valueOf(1L), service.userId);
     }
 
     @Test
@@ -97,18 +97,18 @@ public class PositionUseCaseTest {
         PageRequest request = new PageRequest();
         OffsetDateTime from = OffsetDateTime.now();
         OffsetDateTime to = from.plusHours(1);
-        PositionPage result = useCase.listUserHistory("usr_9", request, from, to);
+        PositionPage result = useCase.listUserHistory(9L, request, from, to);
 
         assertSame(expected, result);
         assertSame(request, service.pageRequest);
-        assertEquals("usr_9", service.userId);
+        assertEquals(Long.valueOf(9L), service.userId);
         assertSame(from, service.from);
         assertSame(to, service.to);
     }
 
     private static class RecordingPositionService extends PositionService {
         private PageRequest pageRequest;
-        private String userId;
+        private Long userId;
         private String positionId;
         private OffsetDateTime from;
         private OffsetDateTime to;
@@ -126,14 +126,14 @@ public class PositionUseCaseTest {
         }
 
         @Override
-        public PositionPage listLatestPositions(PageRequest pageRequest, String userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
+        public PositionPage listLatestPositions(PageRequest pageRequest, Long userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
             this.pageRequest = pageRequest;
             this.userId = userId;
             return listLatestResult;
         }
 
         @Override
-        public PositionPage listUserHistory(String userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
+        public PositionPage listUserHistory(Long userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
             this.userId = userId;
             this.pageRequest = pageRequest;
             this.from = from;
@@ -160,7 +160,7 @@ public class PositionUseCaseTest {
         }
 
         @Override
-        public Position getLatestPosition(String userId) {
+        public Position getLatestPosition(Long userId) {
             this.userId = userId;
             return latestResult;
         }
@@ -173,17 +173,17 @@ public class PositionUseCaseTest {
         }
 
         @Override
-        public Optional<Position> findLatestByUserId(String userId) {
+        public Optional<Position> findLatestByUserId(Long userId) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public PositionPage findLatestPositions(PageRequest pageRequest, String userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
+        public PositionPage findLatestPositions(PageRequest pageRequest, Long userId, OffsetDateTime recordedAfter, BoundingBox bbox) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public PositionPage findUserHistory(String userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
+        public PositionPage findUserHistory(Long userId, PageRequest pageRequest, OffsetDateTime from, OffsetDateTime to) {
             throw new UnsupportedOperationException();
         }
 

@@ -53,6 +53,10 @@ Monorepo with Spring Boot + Angular managed by Bazel.
 Start services:
 ```bash
 docker compose -f infrastructure/docker-compose.yml up -d
+
+delete table
+docker exec -it infrastructure-postgres-1 psql -U postgres -d postgres -c "DROP DATABASE IF EXISTS app_users;"
+docker exec -it infrastructure-postgres-1 psql -U postgres -d postgres -c "CREATE DATABASE app_users;"
 ```
 
 ## Backend endpoints (per OpenAPI)

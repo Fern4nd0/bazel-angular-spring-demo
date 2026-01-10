@@ -40,7 +40,7 @@ public class PositionController implements PositionsApi {
             Integer page,
             Integer pageSize,
             String sort,
-            String userId,
+            Long userId,
             OffsetDateTime recordedAfter,
             String bbox) {
         BoundingBox boundingBox = parseBbox(bbox);
@@ -54,7 +54,7 @@ public class PositionController implements PositionsApi {
 
     @Override
     public PositionListResponse usersUserIdPositionsGet(
-            String userId,
+            Long userId,
             Integer page,
             Integer pageSize,
             String sort,
@@ -65,7 +65,7 @@ public class PositionController implements PositionsApi {
     }
 
     @Override
-    public UserPosition usersUserIdPositionsLatestGet(String userId) {
+    public UserPosition usersUserIdPositionsLatestGet(Long userId) {
         return mapper.toApi(service.getLatestPosition(userId));
     }
 

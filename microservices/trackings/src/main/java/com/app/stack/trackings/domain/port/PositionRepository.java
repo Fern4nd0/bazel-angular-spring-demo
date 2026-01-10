@@ -11,16 +11,16 @@ import java.util.Optional;
 public interface PositionRepository {
     Optional<Position> findById(String id);
 
-    Optional<Position> findLatestByUserId(String userId);
+    Optional<Position> findLatestByUserId(Long userId);
 
     PositionPage findLatestPositions(
             PageRequest pageRequest,
-            String userId,
+            Long userId,
             OffsetDateTime recordedAfter,
             BoundingBox bbox);
 
     PositionPage findUserHistory(
-            String userId,
+            Long userId,
             PageRequest pageRequest,
             OffsetDateTime from,
             OffsetDateTime to);

@@ -2,6 +2,8 @@ databaseChangeLog:
   - changeSet:
       id: 001-create-positions-table
       author: codex
+      validCheckSum:
+        - 9:b2f67184601ccdaad7d50b5fc5355bef
       changes:
         - sqlFile:
             path: db/changelog/create-positions-table.sql
@@ -9,4 +11,28 @@ databaseChangeLog:
       rollback:
         - sqlFile:
             path: db/changelog/rollback-create-positions-table.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 002-seed-positions
+      author: codex
+      changes:
+        - sqlFile:
+            path: db/changelog/seed-positions.sql
+            relativeToChangelogFile: false
+      rollback:
+        - sqlFile:
+            path: db/changelog/rollback-seed-positions.sql
+            relativeToChangelogFile: false
+
+  - changeSet:
+      id: 003-user-id-bigint
+      author: codex
+      changes:
+        - sqlFile:
+            path: db/changelog/alter-positions-user-id-to-bigint.sql
+            relativeToChangelogFile: false
+      rollback:
+        - sqlFile:
+            path: db/changelog/rollback-alter-positions-user-id-to-bigint.sql
             relativeToChangelogFile: false

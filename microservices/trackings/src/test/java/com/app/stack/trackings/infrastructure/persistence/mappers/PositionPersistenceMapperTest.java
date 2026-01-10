@@ -18,7 +18,7 @@ public class PositionPersistenceMapperTest {
         PositionPersistenceMapper mapper = Mappers.getMapper(PositionPersistenceMapper.class);
         PositionEntity entity = new PositionEntity();
         entity.setId("pos_1");
-        entity.setUserId("usr_1");
+        entity.setUserId(1L);
         entity.setLatitude(40.0);
         entity.setLongitude(-3.0);
         entity.setAltitudeMeters(500.0);

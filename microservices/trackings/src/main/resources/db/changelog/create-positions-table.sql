@@ -1,6 +1,6 @@
 CREATE TABLE positions (
   id VARCHAR(64) PRIMARY KEY,
-  user_id VARCHAR(64) NOT NULL,
+  user_id BIGINT NOT NULL,
   latitude DOUBLE PRECISION NOT NULL,
   longitude DOUBLE PRECISION NOT NULL,
   altitude_meters DOUBLE PRECISION,
