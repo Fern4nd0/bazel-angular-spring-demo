@@ -1,0 +1,17 @@
+<section class="users-shell">
+  <aside class="users-menu">
+    <div class="menu-header">
+      <p class="menu-title">Usuarios</p>
+      <span class="menu-subtitle">Gestion y busqueda</span>
+    </div>
+    <nav class="menu-links">
+      <a routerLink="/users/list" routerLinkActive="active">Listado</a>
+      <a routerLink="/users/search" routerLinkActive="active">Busqueda</a>
+      <a routerLink="/users/create" routerLinkActive="active">Crear</a>
+      <a routerLink="/users/selected" routerLinkActive="active">Seleccionado</a>
+    </nav>
+  </aside>
+  <div class="users-content">
+    <router-outlet></router-outlet>
+  </div>
+</section>

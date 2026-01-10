@@ -1,0 +1,8 @@
+<section class="card selected-card">
+  <h1>Usuario seleccionado</h1>
+  <p *ngIf="!selectedUserId">Todavia no has seleccionado un usuario.</p>
+  <p *ngIf="selectedUserId">
+    Usuario actual: <strong>#{{ selectedUserId }}</strong>
+  </p>
+  <button *ngIf="selectedUserId" class="ghost" (click)="goToSelected()">Ver detalle</button>
+</section>

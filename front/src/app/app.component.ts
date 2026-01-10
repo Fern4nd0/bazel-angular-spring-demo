@@ -8,6 +8,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   template: `
     <nav>
       <a routerLink="/home" routerLinkActive="active">Home</a>
+      <a routerLink="/users" routerLinkActive="active">Usuarios</a>
       <a routerLink="/about" routerLinkActive="active">About</a>
     </nav>
     <main>

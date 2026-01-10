@@ -1,0 +1,34 @@
+<section class="card detail-card">
+  <h1>Detalle del usuario</h1>
+  <p *ngIf="loading">Cargando perfil...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="detail-grid" *ngIf="user">
+    <div>
+      <span class="label">Nombre</span>
+      <p>{{ user.firstName }} {{ user.lastName }}</p>
+    </div>
+    <div>
+      <span class="label">Email</span>
+      <p>{{ user.email }}</p>
+    </div>
+    <div>
+      <span class="label">Rol</span>
+      <p>{{ user.role }}</p>
+    </div>
+    <div>
+      <span class="label">Estado</span>
+      <p class="status" [class.active]="user.status === 'active'" [class.blocked]="user.status === 'blocked'">
+        {{ user.status }}
+      </p>
+    </div>
+    <div>
+      <span class="label">Telefono</span>
+      <p>{{ user.phone || 'Sin telefono' }}</p>
+    </div>
+    <div>
+      <span class="label">Actualizado</span>
+      <p>{{ user.updatedAt }}</p>
+    </div>
+  </div>
+</section>

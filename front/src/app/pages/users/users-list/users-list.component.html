@@ -1,0 +1,71 @@
+<section class="card users-card">
+  <header class="card-header">
+    <div>
+      <h1>Listado de usuarios</h1>
+      <p>Explora los usuarios registrados y aplica filtros rapidos.</p>
+    </div>
+    <button (click)="fetchUsers()" [disabled]="loading">Actualizar</button>
+  </header>
+
+  <div class="filters">
+    <label>
+      Estado
+      <select [value]="status" (change)="status = $any($event.target).value; fetchUsers()">
+        <option value="">Todos</option>
+        <option value="active">Activo</option>
+        <option value="inactive">Inactivo</option>
+        <option value="blocked">Bloqueado</option>
+      </select>
+    </label>
+    <label>
+      Rol
+      <input
+        type="text"
+        placeholder="admin, user..."
+        [value]="role"
+        (input)="role = $any($event.target).value"
+        (keyup.enter)="fetchUsers()"
+      />
+    </label>
+    <label>
+      Tamano
+      <select [value]="pageSize" (change)="pageSize = +$any($event.target).value; fetchUsers()">
+        <option [value]="5">5</option>
+        <option [value]="10">10</option>
+        <option [value]="20">20</option>
+      </select>
+    </label>
+  </div>
+
+  <p *ngIf="loading">Cargando...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="table" *ngIf="!loading && users.length">
+    <div class="table-row table-head">
+      <span>Nombre</span>
+      <span>Email</span>
+      <span>Rol</span>
+      <span>Estado</span>
+      <span>Acciones</span>
+    </div>
+    <div class="table-row" *ngFor="let user of users">
+      <span>{{ user.firstName }} {{ user.lastName }}</span>
+      <span>{{ user.email }}</span>
+      <span class="pill">{{ user.role }}</span>
+      <span class="status" [class.active]="user.status === 'active'" [class.blocked]="user.status === 'blocked'">
+        {{ user.status }}
+      </span>
+      <span>
+        <button class="ghost" (click)="goToUser(user.id)">Ver</button>
+      </span>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !users.length && !error">No hay usuarios para mostrar.</p>
+
+  <div class="pager" *ngIf="pagination">
+    <button class="ghost" (click)="prevPage()" [disabled]="page === 1">Anterior</button>
+    <span>Pagina {{ page }} de {{ pagination.totalPages }}</span>
+    <button class="ghost" (click)="nextPage()" [disabled]="page >= pagination.totalPages">Siguiente</button>
+  </div>
+</section>

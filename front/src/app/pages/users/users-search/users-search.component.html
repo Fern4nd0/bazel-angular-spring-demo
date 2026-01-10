@@ -1,0 +1,31 @@
+<section class="card search-card">
+  <h1>Busqueda de usuarios</h1>
+  <p>Busca por email o nombre. Los resultados se muestran abajo.</p>
+
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="ana@company.com, ana..."
+      [value]="query"
+      (input)="query = $any($event.target).value"
+      (keyup.enter)="search()"
+    />
+    <button (click)="search()" [disabled]="loading">Buscar</button>
+  </div>
+
+  <p *ngIf="loading">Buscando...</p>
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <div class="results" *ngIf="!loading && users.length">
+    <div class="result-card" *ngFor="let user of users">
+      <div>
+        <h3>{{ user.firstName }} {{ user.lastName }}</h3>
+        <p>{{ user.email }}</p>
+        <span class="pill">{{ user.role }}</span>
+      </div>
+      <button class="ghost" (click)="goToUser(user.id)">Ver perfil</button>
+    </div>
+  </div>
+
+  <p *ngIf="!loading && !users.length && !error">Sin resultados todavia.</p>
+</section>

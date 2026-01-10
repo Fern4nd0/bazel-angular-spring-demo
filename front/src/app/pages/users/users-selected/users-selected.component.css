@@ -1,0 +1,11 @@
+.selected-card h1 {
+  margin-top: 0;
+}
+
+.ghost {
+  background: #fff;
+  border: 1px solid #cbd5f5;
+  color: #2563eb;
+  padding: 6px 12px;
+  border-radius: 999px;
+}

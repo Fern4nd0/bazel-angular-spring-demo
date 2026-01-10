@@ -1,0 +1,67 @@
+.search-card h1 {
+  margin-top: 0;
+}
+
+.search-bar {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+}
+
+.results {
+  display: grid;
+  gap: 12px;
+}
+
+.result-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  background: #f8fafc;
+  padding: 14px 16px;
+  border-radius: 14px;
+}
+
+.result-card h3 {
+  margin: 0 0 4px;
+}
+
+.pill {
+  background: #e0f2fe;
+  color: #0c4a6e;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+.ghost {
+  background: #fff;
+  border: 1px solid #cbd5f5;
+  color: #2563eb;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.error {
+  color: #dc2626;
+}
+
+@media (max-width: 700px) {
+  .search-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .result-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
