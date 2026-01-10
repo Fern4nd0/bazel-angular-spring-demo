@@ -1,2 +1,0 @@
-ALTER TABLE positions
-  ALTER COLUMN user_id TYPE VARCHAR(64);

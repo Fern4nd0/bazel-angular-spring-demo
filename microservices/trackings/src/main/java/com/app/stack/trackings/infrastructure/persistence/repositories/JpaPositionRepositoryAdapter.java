@@ -14,6 +14,8 @@ import com.app.stack.trackings.infrastructure.persistence.mappers.PositionPersis
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 public class JpaPositionRepositoryAdapter implements PositionRepository {
+    private static final Logger logger = LoggerFactory.getLogger(JpaPositionRepositoryAdapter.class);
+
     private final PositionEntityRepository repository;
     private final PositionPersistenceMapper mapper;
 
@@ -123,6 +127,7 @@ public class JpaPositionRepositoryAdapter implements PositionRepository {
         try {
             return action.get();
         } catch (DataAccessException ex) {
+            logger.error(message, ex);
             throw new DomainException(DomainErrorCode.PERSISTENCE_ERROR, message, ex);
         }
     }
