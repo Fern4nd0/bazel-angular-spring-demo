@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import com.app.stack.users.domain.entities.PageRequest;
+import com.app.stack.users.domain.entities.SortDirection;
 import com.app.stack.users.domain.entities.User;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.domain.entities.UserStatus;
@@ -14,18 +16,19 @@ import org.junit.Test;
 
 public class UserUseCaseTest {
     @Test
-    public void listUsersDelegatesToService() {
+    public void listUsersNormalizesPageAndSort() {
         RecordingUserService service = new RecordingUserService();
         UserUseCase useCase = new UserUseCase(service);
         UserPage expected = new UserPage();
         service.listUsersResult = expected;
 
-        UserPage result = useCase.listUsers(2, 30, "email:asc", UserStatus.ACTIVE, "admin");
+        UserPage result = useCase.listUsers(0, 500, "email:desc", UserStatus.ACTIVE, "admin");
 
         assertSame(expected, result);
-        assertEquals(Integer.valueOf(2), service.page);
-        assertEquals(Integer.valueOf(30), service.pageSize);
-        assertEquals("email:asc", service.sort);
+        assertEquals(1, service.pageRequest.getPage());
+        assertEquals(200, service.pageRequest.getPageSize());
+        assertEquals("email", service.pageRequest.getSortField());
+        assertEquals(SortDirection.DESC, service.pageRequest.getSortDirection());
         assertEquals(UserStatus.ACTIVE, service.status);
         assertEquals("admin", service.role);
     }
@@ -41,9 +44,10 @@ public class UserUseCaseTest {
 
         assertSame(expected, result);
         assertEquals("john", service.query);
-        assertEquals(Integer.valueOf(1), service.page);
-        assertEquals(Integer.valueOf(10), service.pageSize);
-        assertEquals("createdAt:desc", service.sort);
+        assertEquals(1, service.pageRequest.getPage());
+        assertEquals(10, service.pageRequest.getPageSize());
+        assertEquals("createdAt", service.pageRequest.getSortField());
+        assertEquals(SortDirection.DESC, service.pageRequest.getSortDirection());
     }
 
     @Test
@@ -99,9 +103,7 @@ public class UserUseCaseTest {
     }
 
     private static class RecordingUserService extends UserService {
-        private Integer page;
-        private Integer pageSize;
-        private String sort;
+        private PageRequest pageRequest;
         private UserStatus status;
         private String role;
         private String query;
@@ -120,21 +122,17 @@ public class UserUseCaseTest {
         }
 
         @Override
-        public UserPage listUsers(Integer page, Integer pageSize, String sort, UserStatus status, String role) {
-            this.page = page;
-            this.pageSize = pageSize;
-            this.sort = sort;
+        public UserPage listUsers(PageRequest pageRequest, UserStatus status, String role) {
+            this.pageRequest = pageRequest;
             this.status = status;
             this.role = role;
             return listUsersResult;
         }
 
         @Override
-        public UserPage searchUsers(String query, Integer page, Integer pageSize, String sort) {
+        public UserPage searchUsers(String query, PageRequest pageRequest) {
             this.query = query;
-            this.page = page;
-            this.pageSize = pageSize;
-            this.sort = sort;
+            this.pageRequest = pageRequest;
             return searchUsersResult;
         }
 

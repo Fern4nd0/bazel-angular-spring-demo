@@ -6,17 +6,17 @@ import com.app.stack.generated.model.UserCreate;
 import com.app.stack.generated.model.UserListResponse;
 import com.app.stack.generated.model.UserStatus;
 import com.app.stack.generated.model.UserUpdate;
-import com.app.stack.users.application.UserUseCase;
+import com.app.stack.users.application.port.UserUseCasePort;
 import com.app.stack.users.domain.entities.UserPage;
 import com.app.stack.users.infrastructure.web.mappers.UserApiMapper;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class UserController implements UsersApi {
-    private final UserUseCase service;
+    private final UserUseCasePort service;
     private final UserApiMapper mapper;
 
-    public UserController(UserUseCase service, UserApiMapper mapper) {
+    public UserController(UserUseCasePort service, UserApiMapper mapper) {
         this.service = service;
         this.mapper = mapper;
     }

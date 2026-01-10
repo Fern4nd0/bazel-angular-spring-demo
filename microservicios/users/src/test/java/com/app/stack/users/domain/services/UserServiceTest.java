@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import com.app.stack.users.domain.entities.PageRequest;
@@ -71,7 +70,7 @@ public class UserServiceTest {
     public void searchUsersRequiresQuery() {
         UserService service = new UserService(new InMemoryUserRepository());
         try {
-            service.searchUsers("  ", 1, 10, null);
+            service.searchUsers("  ", pageRequest(1, 10, null, null));
             fail("Expected DomainException");
         } catch (DomainException ex) {
             assertEquals(DomainErrorCode.INVALID_SEARCH_QUERY, ex.getCode());
@@ -79,19 +78,17 @@ public class UserServiceTest {
     }
 
     @Test
-    public void listUsersNormalizesPageAndSort() {
+    public void listUsersUsesProvidedPageRequest() {
         InMemoryUserRepository repository = new InMemoryUserRepository();
         UserService service = new UserService(repository);
 
-        UserPage result = service.listUsers(0, 500, "email:desc", null, null);
+        PageRequest request = pageRequest(3, 50, "email", SortDirection.DESC);
+        UserPage result = service.listUsers(request, null, null);
 
+        assertSame(request, repository.lastPageRequest);
         assertSame(repository.lastPageRequest, repository.lastReturnedPageRequest);
-        assertEquals(1, repository.lastPageRequest.getPage());
-        assertEquals(200, repository.lastPageRequest.getPageSize());
-        assertEquals("email", repository.lastPageRequest.getSortField());
-        assertEquals(SortDirection.DESC, repository.lastPageRequest.getSortDirection());
-        assertEquals(1, result.getPage());
-        assertEquals(200, result.getPageSize());
+        assertEquals(3, result.getPage());
+        assertEquals(50, result.getPageSize());
     }
 
     @Test
@@ -196,5 +193,18 @@ public class UserServiceTest {
             lastReturnedPageRequest = request;
             return page;
         }
+    }
+
+    private static PageRequest pageRequest(
+            int page,
+            int pageSize,
+            String sortField,
+            SortDirection sortDirection) {
+        PageRequest request = new PageRequest();
+        request.setPage(page);
+        request.setPageSize(pageSize);
+        request.setSortField(sortField);
+        request.setSortDirection(sortDirection);
+        return request;
     }
 }
