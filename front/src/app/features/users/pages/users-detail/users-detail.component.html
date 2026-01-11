@@ -31,4 +31,64 @@
       <p>{{ user.updatedAt }}</p>
     </div>
   </div>
+
+  <div class="positions" *ngIf="user">
+    <div class="positions-header">
+      <div>
+        <h2>Posiciones</h2>
+        <p>Consulta la ultima posicion y el historial del usuario.</p>
+      </div>
+      <div class="positions-actions">
+        <button class="ghost" (click)="loadLatestPosition()" [disabled]="latestLoading">Ultima posicion</button>
+        <button class="ghost" (click)="loadPositionHistory()" [disabled]="historyLoading">Ver historial</button>
+      </div>
+    </div>
+
+    <p *ngIf="latestLoading">Cargando ultima posicion...</p>
+    <p class="error" *ngIf="latestError">{{ latestError }}</p>
+
+    <div class="latest-card" *ngIf="latestPosition">
+      <div>
+        <span class="label">Registrada</span>
+        <p>{{ latestPosition.recordedAt }}</p>
+      </div>
+      <div>
+        <span class="label">Lat / Lon</span>
+        <p>{{ latestPosition.point.latitude }}, {{ latestPosition.point.longitude }}</p>
+      </div>
+      <div>
+        <span class="label">Fuente</span>
+        <p>{{ latestPosition.source }}</p>
+      </div>
+      <div>
+        <span class="label">Precision</span>
+        <p>{{ latestPosition.point.accuracyMeters || 'n/a' }}</p>
+      </div>
+    </div>
+
+    <p *ngIf="historyLoading">Cargando historial...</p>
+    <p class="error" *ngIf="historyError">{{ historyError }}</p>
+
+    <div class="history-table" *ngIf="!historyLoading && positionHistory.length">
+      <div class="history-row history-head">
+        <span>Fecha</span>
+        <span>Lat / Lon</span>
+        <span>Fuente</span>
+        <span>Accuracy</span>
+      </div>
+      <div class="history-row" *ngFor="let position of positionHistory">
+        <span>{{ position.recordedAt }}</span>
+        <span>{{ position.point.latitude }}, {{ position.point.longitude }}</span>
+        <span class="pill">{{ position.source }}</span>
+        <span>{{ position.point.accuracyMeters || 'n/a' }}</span>
+      </div>
+    </div>
+    <p *ngIf="!historyLoading && !positionHistory.length && !historyError">Sin historial cargado.</p>
+
+    <div class="pager" *ngIf="historyPagination">
+      <button class="ghost" (click)="prevHistoryPage()" [disabled]="historyPage === 1">Anterior</button>
+      <span>Pagina {{ historyPage }} de {{ historyPagination.totalPages }}</span>
+      <button class="ghost" (click)="nextHistoryPage()" [disabled]="historyPage >= historyPagination.totalPages">Siguiente</button>
+    </div>
+  </div>
 </section>
